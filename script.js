@@ -250,7 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const currentUser = JSON.parse(localStorage.getItem('user'));
     
     // Check if the global party already exists
-    const globalPartyCode = "GLOBAL";  // Set a fixed global party code
+    const globalPartyCode = "ECLIPXE";  // Set a fixed global party code
     get(ref(db, `parties/${globalPartyCode}`))
       .then(snapshot => {
         if (!snapshot.exists()) {
