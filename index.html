@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Waves Chat</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="script.js"></script>
+</head>
+<body>
+  <div id="signup" class="container">
+    <h2>Signup</h2>
+    <input type="text" id="signupUsername" placeholder="Enter Username" required />
+    <div class="password-container">
+      <input type="password" id="signupPassword" placeholder="Enter Password" required />
+      <span class="toggle-password" id="toggleSignupPassword">
+        <i class="fas fa-eye"></i>
+      </span>
+    </div>      
+    <button id="signupBtn">Signup</button>
+    <div class="link" id="toLogin">Already have an account? Login</div>
+  </div>
+
+  <div id="login" class="container">
+    <h2>Login</h2>
+    <input type="text" id="loginUsername" placeholder="Enter Username" required />
+    <div class="password-container">
+      <input type="password" id="loginPassword" placeholder="Enter Password" required />
+      <span class="toggle-password" id="toggleLoginPassword">
+        <i class="fas fa-eye"></i> 
+      </span>
+    </div>
+    <button id="loginBtn">Login</button>
+    <div class="link" id="toSignup">Don't have an account? Signup</div>
+  </div>
+
+  <div id="chat" class="container">
+    <div id="top-left-buttons">
+      <button id="deletePartyBtn" style="display: none;"><i class="fas fa-trash-alt"></i> Delete Party</button>
+    </div>
+    <div id="top-right-buttons">
+      <div class="dropdown">
+        <button class="dropbtn"><i class="fas fa-cog"></i></button>
+        <div class="dropdown-content">
+          <button id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+          <button id="deleteAccountBtn"><i class="fas fa-trash-alt"></i> Delete Account</button>
+        </div>
+      </div>
+    </div>
+
+    <h2>Welcome, <span id="displayName"></span>.</h2>
+    
+    <div id="partyCodeContainer">Party Code: <span id="partyCodeDisplay"></span></div>
+    
+    <div id="messages"></div>
+    
+    <div class="message-input-container">
+      <input type="text" id="messageInput" placeholder="Type a message" />
+      <button id="sendBtn">
+        <i class="fas fa-paper-plane"></i>
+      </button>
+    </div>
+    <button id="leavePartyBtn"><i class="fas fa-sign-out-alt"></i> Leave Party</button>
+  </div>  
+
+  <div id="menu" class="container">
+    <h2>Welcome, <span id="menuDisplayName"></span>.</h2>
+    <button id="globalChatBtn">Enter Global Chat</button>
+    <button id="createPartyBtn">Create Party</button>
+    <button id="joinPartyBtn">Join Party</button>
+  </div>
+
+  <div id="createParty" class="container">
+    <h2>Party Created</h2>
+    <p>Your party code is: <span id="partyCode"></span></p>
+    <button id="backToMenuFromCreate">Back to Menu</button>
+  </div>
+
+  <div id="joinParty" class="container">
+    <h2>Join Party</h2>
+    <input type="text" id="joinPartyCode" placeholder="Enter Party Code" required />
+    <button id="joinPartySubmitBtn">Join Party</button>
+    <button id="backToMenuFromJoin">Back to Menu</button>
+  </div>
+
+  <div id="toast-container"></div>
+</body>
+</html>
