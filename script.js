@@ -128,25 +128,6 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   window.removeSavedParty = removeSavedParty;
-
-  initializeTheme();
-
-  // Create particle effects
-  function createParticles() {
-    const particlesContainer = document.getElementById('particles');
-    const particleCount = 15;
-    
-    for (let i = 0; i < particleCount; i++) {
-      const particle = document.createElement('div');
-      particle.className = 'particle';
-      particle.style.left = Math.random() * 100 + '%';
-      particle.style.animationDelay = Math.random() * 8 + 's';
-      particle.style.animationDuration = (Math.random() * 4 + 6) + 's';
-      particlesContainer.appendChild(particle);
-    }
-  }
-
-  createParticles();
   const signupDiv = document.getElementById('signup');
   const loginDiv = document.getElementById('login');
   const chatDiv = document.getElementById('chat');
@@ -613,6 +594,26 @@ document.addEventListener('DOMContentLoaded', () => {
   } else {
     console.error('deletePartyBtn not found');
   }
+
+  // Initialize theme and particles after all elements are defined
+  initializeTheme();
+  
+  // Create particle effects
+  function createParticles() {
+    const particlesContainer = document.getElementById('particles');
+    const particleCount = 15;
+    
+    for (let i = 0; i < particleCount; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      particle.style.left = Math.random() * 100 + '%';
+      particle.style.animationDelay = Math.random() * 8 + 's';
+      particle.style.animationDuration = (Math.random() * 4 + 6) + 's';
+      particlesContainer.appendChild(particle);
+    }
+  }
+
+  createParticles();
 
   function leaveParty() {
     const currentUser = JSON.parse(localStorage.getItem('user'));
