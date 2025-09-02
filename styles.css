@@ -1,3 +1,31 @@
+:root {
+    --bg-primary: #000000;
+    --bg-secondary: #111111;
+    --bg-tertiary: #222222;
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255, 255, 255, 0.6);
+    --text-muted: rgba(255, 255, 255, 0.4);
+    --border-primary: rgba(255, 255, 255, 0.1);
+    --border-secondary: rgba(255, 255, 255, 0.05);
+    --glass-bg: rgba(0, 0, 0, 0.8);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --hover-bg: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="light"] {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8f9fa;
+    --bg-tertiary: #e9ecef;
+    --text-primary: #000000;
+    --text-secondary: rgba(0, 0, 0, 0.6);
+    --text-muted: rgba(0, 0, 0, 0.4);
+    --border-primary: rgba(0, 0, 0, 0.1);
+    --border-secondary: rgba(0, 0, 0, 0.05);
+    --glass-bg: rgba(255, 255, 255, 0.8);
+    --glass-border: rgba(0, 0, 0, 0.1);
+    --hover-bg: rgba(0, 0, 0, 0.05);
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -6,8 +34,8 @@
 
 body {
     font-family: 'JetBrains Mono', 'SF Mono', Monaco, 'Cascadia Code', monospace;
-    background: linear-gradient(135deg, #000000 0%, #111111 50%, #000000 100%);
-    color: #ffffff;
+    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-primary) 100%);
+    color: var(--text-primary);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -17,6 +45,7 @@ body {
     font-size: 14px;
     line-height: 1.5;
     font-weight: 300;
+    transition: all 0.3s ease;
 }
 
 body::before {
@@ -34,33 +63,33 @@ body::before {
     z-index: -1;
 }
 
-#login, #signup, #chat, #menu, #createParty, #joinParty {
+#login, #signup, #chat, #menu, #createParty, #joinParty, #savedParties {
     display: none;
-    max-width: 400px;
+    max-width: 420px;
     width: 90%;
     padding: 48px;
-    background: rgba(0, 0, 0, 0.8);
+    background: var(--glass-bg);
     backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--glass-border);
     border-radius: 20px;
     box-shadow: 
         0 8px 32px rgba(0, 0, 0, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        inset 0 1px 0 var(--border-primary);
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 #chat {
     max-width: 1000px;
     padding: 48px;
-    background: rgba(0, 0, 0, 0.85);
+    background: var(--glass-bg);
     backdrop-filter: blur(25px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--border-secondary);
     border-radius: 24px;
     position: relative;
     display: none;
     box-shadow: 
         0 20px 60px rgba(0, 0, 0, 0.4),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        inset 0 1px 0 var(--border-primary);
 }
 
 #chat.active {
@@ -72,18 +101,28 @@ h2 {
     margin-bottom: 40px;
     font-size: 32px;
     font-weight: 200;
-    color: #ffffff;
+    color: var(--text-primary);
     letter-spacing: 2px;
     text-transform: lowercase;
     font-family: 'JetBrains Mono', monospace;
+}
+
+h3 {
+    text-align: center;
+    margin-bottom: 24px;
+    font-size: 24px;
+    font-weight: 300;
+    color: var(--text-primary);
+    letter-spacing: 1px;
+    text-transform: lowercase;
 }
 
 input, button {
     width: 100%;
     padding: 18px 24px;
     margin: 12px 0;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-primary);
+    background: var(--border-secondary);
     backdrop-filter: blur(10px);
     border-radius: 12px;
     font-size: 14px;
@@ -93,17 +132,16 @@ input, button {
 }
 
 input {
-    color: #ffffff;
+    color: var(--text-primary);
 }
 
-
 input::placeholder {
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--text-muted);
     font-style: italic;
 }
 
 button {
-    color: #ffffff;
+    color: var(--text-primary);
     cursor: pointer;
     font-weight: 400;
     letter-spacing: 1px;
@@ -553,4 +591,279 @@ input:focus {
         0 0 20px rgba(255, 255, 255, 0.05),
         0 8px 25px rgba(0, 0, 0, 0.2);
     transform: translateY(-1px);
+}
+
+/* Modal styles */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+    background: var(--glass-bg);
+    backdrop-filter: blur(25px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 40px;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 var(--border-primary);
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.modal-buttons button {
+    flex: 1;
+    margin: 0;
+}
+
+/* Saved parties list */
+#savedPartiesList {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+}
+
+.saved-party-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    margin: 8px 0;
+    background: var(--border-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: 12px;
+    transition: all 0.2s ease;
+}
+
+.saved-party-item:hover {
+    background: var(--hover-bg);
+    border-color: var(--border-primary);
+    transform: translateY(-2px);
+}
+
+.saved-party-info {
+    flex: 1;
+}
+
+.saved-party-name {
+    font-weight: 400;
+    color: var(--text-primary);
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.saved-party-code {
+    font-size: 12px;
+    color: var(--text-secondary);
+    letter-spacing: 1px;
+}
+
+.saved-party-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.saved-party-actions button {
+    width: auto;
+    padding: 8px 12px;
+    margin: 0;
+    font-size: 12px;
+    border-radius: 8px;
+}
+
+/* Theme toggle */
+#themeToggle {
+    background: var(--border-secondary);
+    border: 1px solid var(--border-primary);
+    color: var(--text-secondary);
+    padding: 12px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 10px;
+    width: auto;
+    margin: 0 8px;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+#themeToggle:hover {
+    color: var(--text-primary);
+    background: var(--hover-bg);
+    border-color: var(--border-primary);
+    transform: translateY(-1px);
+}
+
+/* Enhanced styling updates */
+.link {
+    color: var(--text-secondary);
+}
+
+.link:hover {
+    color: var(--text-primary);
+}
+
+.toggle-password {
+    color: var(--text-muted);
+}
+
+.toggle-password:hover {
+    color: var(--text-primary);
+}
+
+#messages {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-secondary);
+}
+
+.message {
+    border-bottom: 1px solid var(--border-secondary);
+    color: var(--text-primary);
+}
+
+#partyCodeContainer {
+    background: var(--border-secondary);
+    border: 1px solid var(--border-primary);
+    color: var(--text-secondary);
+}
+
+.toast {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    color: var(--text-primary);
+}
+
+/* Particle background effect */
+.particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: var(--text-muted);
+    border-radius: 50%;
+    animation: float-particle 8s infinite linear;
+}
+
+@keyframes float-particle {
+    0% {
+        transform: translateY(100vh) translateX(0);
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.3;
+    }
+    90% {
+        opacity: 0.3;
+    }
+    100% {
+        transform: translateY(-10vh) translateX(50px);
+        opacity: 0;
+    }
+}
+
+/* Enhanced button effects */
+button:active {
+    transform: translateY(0) scale(0.98);
+}
+
+/* Improved scrollbar for saved parties */
+#savedPartiesList::-webkit-scrollbar {
+    width: 4px;
+}
+
+#savedPartiesList::-webkit-scrollbar-thumb {
+    background: var(--border-primary);
+    border-radius: 2px;
+}
+
+#savedPartiesList::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Status indicator */
+.status-indicator {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 8px 16px;
+    background: var(--border-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: 20px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    letter-spacing: 1px;
+    font-weight: 300;
+}
+
+/* Enhanced message animations */
+.message {
+    animation: slideInMessage 0.3s ease;
+}
+
+/* Light mode specific enhancements */
+[data-theme="light"] body::before {
+    background: 
+        radial-gradient(circle at 20% 50%, rgba(0, 0, 0, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(0, 0, 0, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 40% 80%, rgba(0, 0, 0, 0.02) 0%, transparent 50%);
+}
+
+[data-theme="light"] .particle {
+    background: var(--text-muted);
+}
+
+/* Enhanced container hover effects */
+.container:hover {
+    border-color: var(--border-primary);
+    box-shadow: 
+        0 12px 40px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 var(--border-primary);
+}
+
+/* Improved button spacing in containers */
+.container button:last-child {
+    margin-bottom: 0;
+}
+
+/* Enhanced focus states for better accessibility */
+button:focus-visible, input:focus-visible {
+    outline: 2px solid var(--border-primary);
+    outline-offset: 2px;
 }

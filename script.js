@@ -48,6 +48,105 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   requestNotificationPermission();
+
+  // Theme management
+  function initializeTheme() {
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateThemeIcon(savedTheme);
+  }
+
+  function updateThemeIcon(theme) {
+    const icon = themeToggle.querySelector('i');
+    icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+  }
+
+  function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    updateThemeIcon(newTheme);
+  }
+
+  // Saved parties management
+  function getSavedParties() {
+    return JSON.parse(localStorage.getItem('savedParties') || '[]');
+  }
+
+  function saveParty(code, name) {
+    const savedParties = getSavedParties();
+    const existingIndex = savedParties.findIndex(p => p.code === code);
+    
+    if (existingIndex >= 0) {
+      savedParties[existingIndex].name = name;
+    } else {
+      savedParties.push({ code, name, savedAt: Date.now() });
+    }
+    
+    localStorage.setItem('savedParties', JSON.stringify(savedParties));
+    showToast(`Party "${name}" saved successfully`);
+  }
+
+  function removeSavedParty(code) {
+    const savedParties = getSavedParties().filter(p => p.code !== code);
+    localStorage.setItem('savedParties', JSON.stringify(savedParties));
+    loadSavedParties();
+  }
+
+  function loadSavedParties() {
+    const savedParties = getSavedParties();
+    savedPartiesList.innerHTML = '';
+    
+    if (savedParties.length === 0) {
+      savedPartiesList.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 20px;">no saved parties</div>';
+      return;
+    }
+
+    savedParties.forEach(party => {
+      const item = document.createElement('div');
+      item.className = 'saved-party-item';
+      item.innerHTML = `
+        <div class="saved-party-info">
+          <div class="saved-party-name">${party.name}</div>
+          <div class="saved-party-code">${party.code}</div>
+        </div>
+        <div class="saved-party-actions">
+          <button onclick="joinSavedParty('${party.code}')">join</button>
+          <button onclick="removeSavedParty('${party.code}')" style="color: var(--text-muted);">remove</button>
+        </div>
+      `;
+      savedPartiesList.appendChild(item);
+    });
+  }
+
+  window.joinSavedParty = (code) => {
+    localStorage.setItem('partyCode', code);
+    partyCodeDisplay.textContent = code;
+    savedPartiesDiv.style.display = 'none';
+    loadPartyChat(code);
+  };
+
+  window.removeSavedParty = removeSavedParty;
+
+  initializeTheme();
+
+  // Create particle effects
+  function createParticles() {
+    const particlesContainer = document.getElementById('particles');
+    const particleCount = 15;
+    
+    for (let i = 0; i < particleCount; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      particle.style.left = Math.random() * 100 + '%';
+      particle.style.animationDelay = Math.random() * 8 + 's';
+      particle.style.animationDuration = (Math.random() * 4 + 6) + 's';
+      particlesContainer.appendChild(particle);
+    }
+  }
+
+  createParticles();
   const signupDiv = document.getElementById('signup');
   const loginDiv = document.getElementById('login');
   const chatDiv = document.getElementById('chat');
@@ -77,9 +176,21 @@ document.addEventListener('DOMContentLoaded', () => {
   const backToMenuFromJoin = document.getElementById('backToMenuFromJoin');
   const partyCodeSpan = document.getElementById('partyCode');
   const joinPartyCodeInput = document.getElementById('joinPartyCode');
+  const joinPartySubmitBtn = document.getElementById('joinPartySubmitBtn');
   const leavePartyBtn = document.getElementById('leavePartyBtn');
   const partyCodeDisplay = document.getElementById('partyCodeDisplay');
   const deletePartyBtn = document.getElementById('deletePartyBtn');
+  const savePartyBtn = document.getElementById('savePartyBtn');
+  const themeToggle = document.getElementById('themeToggle');
+  const savedPartiesBtn = document.getElementById('savedPartiesBtn');
+  const savedPartiesDiv = document.getElementById('savedParties');
+  const savedPartiesList = document.getElementById('savedPartiesList');
+  const backToMenuFromSaved = document.getElementById('backToMenuFromSaved');
+  const savePartyModal = document.getElementById('savePartyModal');
+  const partyNameInput = document.getElementById('partyNameInput');
+  const confirmSaveParty = document.getElementById('confirmSaveParty');
+  const cancelSaveParty = document.getElementById('cancelSaveParty');
+  const menuDisplayName = document.getElementById('menuDisplayName');
 
   const togglePasswordVisibility = (input, toggleBtn) => {
     toggleBtn.addEventListener('click', () => {
@@ -369,6 +480,54 @@ document.addEventListener('DOMContentLoaded', () => {
 
   backToMenuFromCreate.addEventListener('click', showMenu);
   backToMenuFromJoin.addEventListener('click', showMenu);
+  backToMenuFromSaved.addEventListener('click', showMenu);
+
+  // Theme toggle
+  themeToggle.addEventListener('click', toggleTheme);
+
+  // Saved parties functionality
+  savedPartiesBtn.addEventListener('click', () => {
+    menuDiv.style.display = 'none';
+    savedPartiesDiv.style.display = 'block';
+    loadSavedParties();
+  });
+
+  // Save party functionality
+  savePartyBtn.addEventListener('click', () => {
+    const currentPartyCode = localStorage.getItem('partyCode');
+    if (currentPartyCode) {
+      savePartyModal.style.display = 'flex';
+      partyNameInput.focus();
+    } else {
+      showToast('No active party to save');
+    }
+  });
+
+  confirmSaveParty.addEventListener('click', () => {
+    const name = partyNameInput.value.trim();
+    const currentPartyCode = localStorage.getItem('partyCode');
+    
+    if (name && currentPartyCode) {
+      saveParty(currentPartyCode, name);
+      savePartyModal.style.display = 'none';
+      partyNameInput.value = '';
+    } else {
+      showToast('Please enter a party name');
+    }
+  });
+
+  cancelSaveParty.addEventListener('click', () => {
+    savePartyModal.style.display = 'none';
+    partyNameInput.value = '';
+  });
+
+  // Close modal on outside click
+  savePartyModal.addEventListener('click', (e) => {
+    if (e.target === savePartyModal) {
+      savePartyModal.style.display = 'none';
+      partyNameInput.value = '';
+    }
+  });
 
   joinPartySubmitBtn.addEventListener('click', () => {
     const partyCode = joinPartyCodeInput.value.trim();

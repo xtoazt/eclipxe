@@ -42,8 +42,10 @@
   <div id="chat" class="container">
     <div id="top-left-buttons">
       <button id="deletePartyBtn" style="display: none;"><i class="fas fa-trash-alt"></i></button>
+      <button id="savePartyBtn"><i class="fas fa-bookmark"></i></button>
     </div>
     <div id="top-right-buttons">
+      <button id="themeToggle"><i class="fas fa-sun"></i></button>
       <div class="dropdown">
         <button class="dropbtn"><i class="fas fa-cog"></i></button>
         <div class="dropdown-content">
@@ -73,6 +75,7 @@
 <button id="globalChatBtn">global chat</button>
 <button id="createPartyBtn">create party</button>
 <button id="joinPartyBtn">join party</button>
+<button id="savedPartiesBtn">saved parties</button>
   </div>
 
   <div id="createParty" class="container">
@@ -90,6 +93,24 @@
     <button id="backToMenuFromJoin">back to menu</button>
   </div>
 
+  <div id="savedParties" class="container">
+    <h2>saved parties</h2>
+    <div id="savedPartiesList"></div>
+    <button id="backToMenuFromSaved">back to menu</button>
+  </div>
+
+  <div id="savePartyModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <h3>save party</h3>
+      <input type="text" id="partyNameInput" placeholder="enter party name..." />
+      <div class="modal-buttons">
+        <button id="confirmSaveParty">save</button>
+        <button id="cancelSaveParty">cancel</button>
+      </div>
+    </div>
+  </div>
+
   <div id="toast-container"></div>
+  <div class="particles" id="particles"></div>
 </body>
 </html>
