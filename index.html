@@ -70,12 +70,17 @@
     <button id="leavePartyBtn">leave party</button>
   </div>  
 
-  <div id="menu" class="container">
-<h2><span id="menuDisplayName"></span></h2>
-<button id="globalChatBtn">global chat</button>
-<button id="createPartyBtn">create party</button>
-<button id="joinPartyBtn">join party</button>
-<button id="savedPartiesBtn">saved parties</button>
+  <div id="menu" class="container menu-with-sidebar">
+    <div class="menu-main">
+      <h2><span id="menuDisplayName"></span></h2>
+      <button id="globalChatBtn">global chat</button>
+      <button id="createPartyBtn">create party</button>
+      <button id="joinPartyBtn">join party</button>
+    </div>
+    <div class="menu-sidebar">
+      <h3>saved parties</h3>
+      <div id="menuSavedPartiesList"></div>
+    </div>
   </div>
 
   <div id="createParty" class="container">
@@ -93,11 +98,6 @@
     <button id="backToMenuFromJoin">back to menu</button>
   </div>
 
-  <div id="savedParties" class="container">
-    <h2>saved parties</h2>
-    <div id="savedPartiesList"></div>
-    <button id="backToMenuFromSaved">back to menu</button>
-  </div>
 
   <div id="savePartyModal" class="modal" style="display: none;">
     <div class="modal-content">

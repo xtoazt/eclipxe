@@ -867,3 +867,108 @@ button:focus-visible, input:focus-visible {
     outline: 2px solid var(--border-primary);
     outline-offset: 2px;
 }
+
+/* Menu with sidebar layout */
+.menu-with-sidebar {
+    max-width: 800px;
+    display: flex;
+    gap: 32px;
+    padding: 48px;
+}
+
+.menu-main {
+    flex: 1;
+    min-width: 300px;
+}
+
+.menu-sidebar {
+    flex: 1;
+    min-width: 280px;
+    padding-left: 32px;
+    border-left: 1px solid var(--border-secondary);
+}
+
+.menu-sidebar h3 {
+    margin-bottom: 20px;
+    font-size: 18px;
+    color: var(--text-secondary);
+    text-align: left;
+}
+
+/* Compact saved party items for sidebar */
+.sidebar-party-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    margin: 6px 0;
+    background: var(--border-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.sidebar-party-item:hover {
+    background: var(--hover-bg);
+    border-color: var(--border-primary);
+    transform: translateX(4px);
+}
+
+.sidebar-party-info {
+    flex: 1;
+}
+
+.sidebar-party-name {
+    font-weight: 400;
+    color: var(--text-primary);
+    font-size: 13px;
+    margin-bottom: 2px;
+}
+
+.sidebar-party-code {
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+}
+
+.sidebar-party-remove {
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    padding: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    width: auto;
+    margin: 0;
+}
+
+.sidebar-party-remove:hover {
+    color: var(--text-secondary);
+}
+
+/* Empty state for sidebar */
+.sidebar-empty {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 12px;
+    padding: 20px;
+    font-style: italic;
+}
+
+/* Responsive adjustments for sidebar */
+@media (max-width: 800px) {
+    .menu-with-sidebar {
+        flex-direction: column;
+        max-width: 420px;
+        gap: 24px;
+    }
+    
+    .menu-sidebar {
+        padding-left: 0;
+        border-left: none;
+        border-top: 1px solid var(--border-secondary);
+        padding-top: 24px;
+    }
+}

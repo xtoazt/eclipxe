@@ -86,38 +86,48 @@ document.addEventListener('DOMContentLoaded', () => {
     
     localStorage.setItem('savedParties', JSON.stringify(savedParties));
     showToast(`Party "${name}" saved successfully`);
+    loadMenuSidebar(); // Refresh sidebar
   }
 
   function removeSavedParty(code) {
     const savedParties = getSavedParties().filter(p => p.code !== code);
     localStorage.setItem('savedParties', JSON.stringify(savedParties));
-    loadSavedParties();
+    loadMenuSidebar();
   }
 
-  function loadSavedParties() {
-    const savedParties = getSavedParties();
-    savedPartiesList.innerHTML = '';
-    
-    if (savedParties.length === 0) {
-      savedPartiesList.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 20px;">no saved parties</div>';
-      return;
-    }
 
-    savedParties.forEach(party => {
-      const item = document.createElement('div');
-      item.className = 'saved-party-item';
-      item.innerHTML = `
-        <div class="saved-party-info">
-          <div class="saved-party-name">${party.name}</div>
-          <div class="saved-party-code">${party.code}</div>
-        </div>
-        <div class="saved-party-actions">
-          <button onclick="joinSavedParty('${party.code}')">join</button>
-          <button onclick="removeSavedParty('${party.code}')" style="color: var(--text-muted);">remove</button>
-        </div>
-      `;
-      savedPartiesList.appendChild(item);
-    });
+  function loadMenuSidebar() {
+    const savedParties = getSavedParties();
+    if (menuSavedPartiesList) {
+      menuSavedPartiesList.innerHTML = '';
+      
+      if (savedParties.length === 0) {
+        menuSavedPartiesList.innerHTML = '<div class="sidebar-empty">no saved parties yet</div>';
+      } else {
+        savedParties.forEach(party => {
+          const item = document.createElement('div');
+          item.className = 'sidebar-party-item';
+          item.innerHTML = `
+            <div class="sidebar-party-info">
+              <div class="sidebar-party-name">${party.name}</div>
+              <div class="sidebar-party-code">${party.code}</div>
+            </div>
+            <button class="sidebar-party-remove" onclick="removeSavedParty('${party.code}')">
+              <i class="fas fa-times"></i>
+            </button>
+          `;
+          
+          // Add click to join functionality
+          item.addEventListener('click', (e) => {
+            if (!e.target.classList.contains('sidebar-party-remove') && !e.target.closest('.sidebar-party-remove')) {
+              joinSavedParty(party.code);
+            }
+          });
+          
+          menuSavedPartiesList.appendChild(item);
+        });
+      }
+    }
   }
 
   window.joinSavedParty = (code) => {
@@ -127,7 +137,10 @@ document.addEventListener('DOMContentLoaded', () => {
     loadPartyChat(code);
   };
 
-  window.removeSavedParty = removeSavedParty;
+  window.removeSavedParty = (code) => {
+    removeSavedParty(code);
+    loadMenuSidebar(); // Refresh sidebar
+  };
   const signupDiv = document.getElementById('signup');
   const loginDiv = document.getElementById('login');
   const chatDiv = document.getElementById('chat');
@@ -163,10 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const deletePartyBtn = document.getElementById('deletePartyBtn');
   const savePartyBtn = document.getElementById('savePartyBtn');
   const themeToggle = document.getElementById('themeToggle');
-  const savedPartiesBtn = document.getElementById('savedPartiesBtn');
-  const savedPartiesDiv = document.getElementById('savedParties');
-  const savedPartiesList = document.getElementById('savedPartiesList');
-  const backToMenuFromSaved = document.getElementById('backToMenuFromSaved');
+  const menuSavedPartiesList = document.getElementById('menuSavedPartiesList');
   const savePartyModal = document.getElementById('savePartyModal');
   const partyNameInput = document.getElementById('partyNameInput');
   const confirmSaveParty = document.getElementById('confirmSaveParty');
@@ -343,14 +353,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Function to generate a random party code
+  // Function to generate a memorable but secure party code
   function generatePartyCode() {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let code = '';
-    for (let i = 0; i < 4; i++) {
-      code += characters.charAt(Math.floor(Math.random() * characters.length));
-    }
-    return code;
+    const adjectives = ['COOL', 'EPIC', 'FAST', 'WILD', 'DARK', 'NEON', 'CYBER', 'NOVA', 'FLUX', 'ZETA'];
+    const nouns = ['WOLF', 'HAWK', 'STORM', 'FIRE', 'WAVE', 'BYTE', 'CODE', 'STAR', 'TECH', 'CORE'];
+    const numbers = Math.floor(Math.random() * 99) + 1;
+    
+    const adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
+    const noun = nouns[Math.floor(Math.random() * nouns.length)];
+    
+    return `${adjective}${noun}${numbers.toString().padStart(2, '0')}`;
   }
 
   // Function to show the menu
@@ -363,6 +375,7 @@ document.addEventListener('DOMContentLoaded', () => {
     menuDiv.style.display = 'block';
     const currentUser = JSON.parse(localStorage.getItem('user'));
     menuDisplayName.textContent = currentUser.username;
+    loadMenuSidebar(); // Load sidebar when showing menu
   }
 
   globalChatBtn.addEventListener('click', () => {
@@ -461,17 +474,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   backToMenuFromCreate.addEventListener('click', showMenu);
   backToMenuFromJoin.addEventListener('click', showMenu);
-  backToMenuFromSaved.addEventListener('click', showMenu);
 
   // Theme toggle
   themeToggle.addEventListener('click', toggleTheme);
 
-  // Saved parties functionality
-  savedPartiesBtn.addEventListener('click', () => {
-    menuDiv.style.display = 'none';
-    savedPartiesDiv.style.display = 'block';
-    loadSavedParties();
-  });
 
   // Save party functionality
   savePartyBtn.addEventListener('click', () => {
