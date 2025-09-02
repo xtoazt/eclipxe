@@ -16,6 +16,38 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
 document.addEventListener('DOMContentLoaded', () => {
+  let isTabActive = true;
+  
+  document.addEventListener('visibilitychange', () => {
+    isTabActive = !document.hidden;
+  });
+
+  function requestNotificationPermission() {
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+  }
+
+  function showNotification(username, message) {
+    if (!isTabActive && 'Notification' in window && Notification.permission === 'granted') {
+      const notification = new Notification(`${username} in Eclipse`, {
+        body: message,
+        icon: 'favicon.png',
+        badge: 'favicon.png',
+        tag: 'eclipse-message',
+        renotify: true
+      });
+      
+      notification.onclick = () => {
+        window.focus();
+        notification.close();
+      };
+      
+      setTimeout(() => notification.close(), 5000);
+    }
+  }
+
+  requestNotificationPermission();
   const signupDiv = document.getElementById('signup');
   const loginDiv = document.getElementById('login');
   const chatDiv = document.getElementById('chat');
@@ -278,11 +310,26 @@ document.addEventListener('DOMContentLoaded', () => {
     displayName.textContent = currentUser.username;
   
     const messagesRef = ref(db, `parties/${globalPartyCode}/messages`);
+    let lastMessageCount = 0;
+    
     onValue(messagesRef, (snapshot) => {
       messagesDiv.innerHTML = '';
       const messages = snapshot.val();
+      const messageArray = [];
+      
       for (const key in messages) {
-        const msg = messages[key];
+        messageArray.push(messages[key]);
+      }
+      
+      if (messageArray.length > lastMessageCount && lastMessageCount > 0) {
+        const newMessage = messageArray[messageArray.length - 1];
+        if (newMessage.username !== currentUser.username) {
+          showNotification(newMessage.username, newMessage.text);
+        }
+      }
+      lastMessageCount = messageArray.length;
+      
+      for (const msg of messageArray) {
         const div = document.createElement('div');
         div.className = 'message';
         div.textContent = `${msg.username}: ${msg.text}`;
@@ -349,11 +396,26 @@ document.addEventListener('DOMContentLoaded', () => {
     partyCodeDisplay.textContent = partyCode;
 
     const messagesRef = ref(db, `parties/${partyCode}/messages`);
+    let lastMessageCount = 0;
+    
     onValue(messagesRef, (snapshot) => {
       messagesDiv.innerHTML = '';
       const messages = snapshot.val();
+      const messageArray = [];
+      
       for (const key in messages) {
-        const msg = messages[key];
+        messageArray.push(messages[key]);
+      }
+      
+      if (messageArray.length > lastMessageCount && lastMessageCount > 0) {
+        const newMessage = messageArray[messageArray.length - 1];
+        if (newMessage.username !== currentUser.username) {
+          showNotification(newMessage.username, newMessage.text);
+        }
+      }
+      lastMessageCount = messageArray.length;
+      
+      for (const msg of messageArray) {
         const div = document.createElement('div');
         div.className = 'message';
         div.textContent = `${msg.username}: ${msg.text}`;
