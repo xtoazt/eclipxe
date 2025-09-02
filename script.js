@@ -29,7 +29,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function showNotification(username, message) {
-    if (!isTabActive && 'Notification' in window && Notification.permission === 'granted') {
+    const notificationsEnabled = localStorage.getItem('notificationsEnabled') !== 'false';
+    
+    if (!isTabActive && notificationsEnabled && 'Notification' in window && Notification.permission === 'granted') {
       const notification = new Notification(`${username} in Eclipse`, {
         body: message,
         icon: 'favicon.png',
@@ -57,8 +59,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function updateThemeIcon(theme) {
-    const icon = themeToggle.querySelector('i');
+    const icon = themeToggleSettings.querySelector('i');
     icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+    themeToggleSettings.classList.toggle('active', theme === 'light');
   }
 
   function toggleTheme() {
@@ -175,7 +178,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const partyCodeDisplay = document.getElementById('partyCodeDisplay');
   const deletePartyBtn = document.getElementById('deletePartyBtn');
   const savePartyBtn = document.getElementById('savePartyBtn');
-  const themeToggle = document.getElementById('themeToggle');
+  const themeToggleSettings = document.getElementById('themeToggleSettings');
+  const notificationsToggle = document.getElementById('notificationsToggle');
   const menuSavedPartiesList = document.getElementById('menuSavedPartiesList');
   const savePartyModal = document.getElementById('savePartyModal');
   const partyNameInput = document.getElementById('partyNameInput');
@@ -475,8 +479,35 @@ document.addEventListener('DOMContentLoaded', () => {
   backToMenuFromCreate.addEventListener('click', showMenu);
   backToMenuFromJoin.addEventListener('click', showMenu);
 
-  // Theme toggle
-  themeToggle.addEventListener('click', toggleTheme);
+  // Settings functionality
+  themeToggleSettings.addEventListener('click', toggleTheme);
+
+  // Notifications toggle
+  function initializeNotifications() {
+    const notificationsEnabled = localStorage.getItem('notificationsEnabled') !== 'false';
+    updateNotificationsIcon(notificationsEnabled);
+  }
+
+  function updateNotificationsIcon(enabled) {
+    const icon = notificationsToggle.querySelector('i');
+    icon.className = enabled ? 'fas fa-bell' : 'fas fa-bell-slash';
+    notificationsToggle.classList.toggle('active', enabled);
+  }
+
+  function toggleNotifications() {
+    const currentState = localStorage.getItem('notificationsEnabled') !== 'false';
+    const newState = !currentState;
+    localStorage.setItem('notificationsEnabled', newState);
+    updateNotificationsIcon(newState);
+    
+    if (newState && 'Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+    
+    showToast(`Notifications ${newState ? 'enabled' : 'disabled'}`);
+  }
+
+  notificationsToggle.addEventListener('click', toggleNotifications);
 
 
   // Save party functionality
@@ -601,8 +632,9 @@ document.addEventListener('DOMContentLoaded', () => {
     console.error('deletePartyBtn not found');
   }
 
-  // Initialize theme and particles after all elements are defined
+  // Initialize theme, notifications, and particles after all elements are defined
   initializeTheme();
+  initializeNotifications();
   
   // Create particle effects
   function createParticles() {
