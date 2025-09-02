@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>𝙴𝚌𝚕𝚒𝚙𝚜𝚎</title>
+  <title>Eclipse</title>
   <link rel="icon" type="image/png" href="favicon.png">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
@@ -11,83 +11,78 @@
 </head>
 <body>
   <div id="signup" class="container">
-    <h2>Signup</h2>
-    <input type="text" id="signupUsername" placeholder="Enter Username" required />
+    <h2>Sign Up</h2>
+    <input type="text" id="signupUsername" placeholder="username" required />
     <div class="password-container">
-      <input type="password" id="signupPassword" placeholder="Enter Password" required />
+      <input type="password" id="signupPassword" placeholder="password" required />
       <span class="toggle-password" id="toggleSignupPassword">
         <i class="fas fa-eye"></i>
       </span>
     </div>      
-    <button id="signupBtn">Signup</button>
-    <div class="link" id="toLogin">Already have an account? Login</div>
+    <button id="signupBtn">Create Account</button>
+    <div class="link" id="toLogin">Already have an account? Sign in</div>
   </div>
 
   <div id="login" class="container">
-    <h2>Login</h2>
-    <input type="text" id="loginUsername" placeholder="Enter Username" required />
+    <h2>Sign In</h2>
+    <input type="text" id="loginUsername" placeholder="username" required />
     <div class="password-container">
-      <input type="password" id="loginPassword" placeholder="Enter Password" required />
+      <input type="password" id="loginPassword" placeholder="password" required />
       <span class="toggle-password" id="toggleLoginPassword">
         <i class="fas fa-eye"></i> 
       </span>
     </div>
-    <button id="loginBtn">Login</button>
-    <div class="link" id="toSignup">Don't have an account? Signup</div>
+    <button id="loginBtn">Sign In</button>
+    <div class="link" id="toSignup">Don't have an account? Sign up</div>
   </div>
 
   <div id="chat" class="container">
     <div id="top-left-buttons">
-      <button id="deletePartyBtn" style="display: none;"><i class="fas fa-trash-alt"></i> Delete Party</button>
+      <button id="deletePartyBtn" style="display: none;"><i class="fas fa-trash-alt"></i></button>
     </div>
     <div id="top-right-buttons">
       <div class="dropdown">
         <button class="dropbtn"><i class="fas fa-cog"></i></button>
         <div class="dropdown-content">
-          <button id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+          <button id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Sign Out</button>
           <button id="deleteAccountBtn"><i class="fas fa-trash-alt"></i> Delete Account</button>
         </div>
       </div>
     </div>
 
-    <h2>Welcome, <span id="displayName"></span>.</h2>
+    <h2><span id="displayName"></span></h2>
     
-    <div id="partyCodeContainer">Party Code: <span id="partyCodeDisplay"></span></div>
+    <div id="partyCodeContainer"><span id="partyCodeDisplay"></span></div>
     
     <div id="messages"></div>
     
     <div class="message-input-container">
-      <input type="text" id="messageInput" placeholder="Type a message" />
+      <input type="text" id="messageInput" placeholder="message" />
       <button id="sendBtn">
         <i class="fas fa-paper-plane"></i>
       </button>
     </div>
-    <button id="leavePartyBtn"><i class="fas fa-sign-out-alt"></i> Leave Party</button>
+    <button id="leavePartyBtn">Leave</button>
   </div>  
 
   <div id="menu" class="container">
-<h2>Welcome, <span id="menuDisplayName"></span>.</h2>
-<p style="font-size: 1.2em; color: white; text-align: center; margin-top: -10px; margin-bottom: 10px;">
-  - chat by <span style="font-weight: bold; text-shadow: 0 0 5px #fff;">rohan</span> and 
-  <span style="font-weight: bold; text-shadow: 0 0 5px #fff;">ivan</span> -</span>
-</p>
-<button id="globalChatBtn">Enter Schoolwide Chat</button>
+<h2><span id="menuDisplayName"></span></h2>
+<button id="globalChatBtn">Global Chat</button>
 <button id="createPartyBtn">Create Party</button>
 <button id="joinPartyBtn">Join Party</button>
-
   </div>
 
   <div id="createParty" class="container">
     <h2>Party Created</h2>
-    <p>Your party code is: <span id="partyCode"></span></p>
-    <button id="backToMenuFromCreate">Back to Menu</button>
+    <p style="text-align: center; color: #666666; font-weight: 300; margin-bottom: 30px;">Code: <span id="partyCode" style="color: #ffffff; letter-spacing: 2px;"></span></p>
+    <button id="backToMenuFromCreate">Back</button>
   </div>
 
   <div id="joinParty" class="container">
     <h2>Join Party</h2>
-    <input type="text" id="joinPartyCode" placeholder="Enter Party Code" required />
-    <button id="joinPartySubmitBtn">Join Party</button>
-    <button id="backToMenuFromJoin">Back to Menu</button>
+    <input type="text" id="joinPartyCode" placeholder="party code" required />
+    <button id="joinPartySubmitBtn">Join</button>
+    <button id="backToMenuFromJoin">Back</button>
   </div>
 
   <div id="toast-container"></div>

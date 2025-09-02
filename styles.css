@@ -1,471 +1,379 @@
-
- * {
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-  }
-  
+}
+
 body {
-    font-family: "Inter", "Roboto", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    background: #121212;
-    color: #e0e0e0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: #000000;
+    color: #ffffff;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     overflow: hidden;
     position: relative;
+    font-size: 15px;
+    line-height: 1.4;
+    font-weight: 300;
+}
+
+#login, #signup, #chat, #menu, #createParty, #joinParty {
+    display: none;
+    max-width: 420px;
+    width: 90%;
+    padding: 40px;
+    background: #000000;
+    border: 1px solid #333333;
+    transition: all 0.2s ease;
+}
+
+#chat {
+    max-width: 900px;
+    padding: 40px;
+    background: #000000;
+    border: 1px solid #333333;
+    position: relative;
+    display: none;
+}
+
+#chat.active {
+    display: block;
+}
+
+#top-left-buttons {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    display: flex;
+    align-items: center;
+}
+
+#logoutBtn, #deleteAccountBtn {
+    background: none;
+    border: none;
+    color: #666666;
     font-size: 16px;
+    cursor: pointer;
+    transition: color 0.15s ease;
+    width: auto;
+    padding: 8px;
+    margin: 0;
+}
+
+#logoutBtn:hover, #deleteAccountBtn:hover {
+    color: #ffffff;
+}
+
+#logoutBtn i, #deleteAccountBtn i {
+    font-size: 16px;
+}
+
+.message-input-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    border-top: 1px solid #222222;
+    padding-top: 20px;
+}
+
+#messageInput {
+    flex: 1;
+    padding: 16px;
+    margin-right: 15px;
+    border: 1px solid #333333;
+    background: transparent;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 300;
+}
+
+#messageInput:focus {
+    outline: none;
+    border-color: #666666;
+    background: #111111;
+}
+
+#sendBtn {
+    background: transparent;
+    border: 1px solid #333333;
+    color: #666666;
+    width: 50px;
+    height: 50px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+#sendBtn:hover {
+    color: #ffffff;
+    border-color: #666666;
+    background: #111111;
+}
+
+#sendBtn i {
+    font-size: 16px;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 28px;
+    font-weight: 200;
+    color: #ffffff;
+    letter-spacing: 0.5px;
+}
+
+input, button {
+    width: 100%;
+    padding: 16px;
+    margin: 8px 0;
+    border: 1px solid #333333;
+    background: transparent;
+    font-size: 15px;
+    transition: all 0.15s ease;
+    font-weight: 300;
+}
+
+input {
+    color: #ffffff;
+}
+
+input:focus {
+    outline: none;
+    border-color: #666666;
+    background: #111111;
+}
+
+input::placeholder {
+    color: #666666;
+}
+
+button {
+    color: #ffffff;
+    cursor: pointer;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+}
+
+button:hover {
+    background: #111111;
+    border-color: #666666;
+}
+
+#leavePartyBtn, #deletePartyBtn {
+    background: transparent;
+    border: 1px solid #666666;
+    color: #999999;
+    margin-top: 20px;
+}
+
+#messages {
+    height: 500px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    padding: 20px;
+    background: #000000;
+    border: 1px solid #222222;
+    font-size: 14px;
     line-height: 1.6;
 }
 
-body::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle at center, #2a2a2a, #121212, #000000);
-    background-size: 300% 300%;
-    animation: background-animation 12s infinite alternate ease-in-out;
-    z-index: -2;
+#messages::-webkit-scrollbar {
+    width: 1px;
 }
 
-/* Subtle neon glow */
-body::after {
-    content: "";
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle at center, rgba(58, 133, 191, 0.4), rgba(179, 57, 241, 0.3), transparent);
-    animation: glow-animation 10s infinite alternate ease-in-out;
-    z-index: -1;
-    opacity: 0.7;
-}
-
-@keyframes background-animation {
-    0% {
-        background-position: 0% 0%;
-    }
-    100% {
-        background-position: 100% 100%;
-    }
-}
-
-@keyframes glow-animation {
-    0% {
-        transform: scale(1);
-        opacity: 0.5;
-    }
-    100% {
-        transform: scale(1.3);
-        opacity: 0.9;
-    }
-}
-
-/* Card styling */
-#login, #signup, #chat, #menu, #createParty, #joinParty {
-    display: none;
-    max-width: 400px;
-    width: 90%;
-    padding: 25px;
-    background: rgba(30, 30, 30, 0.9);
-    border-radius: 15px;
-    box-shadow: 0px 6px 20px rgba(58, 133, 191, 0.4);
-    transition: transform 0.3s ease, opacity 0.3s ease;
-    font-family: "Nunito", "Inter", sans-serif;
-}
-
-/* Enhancing the chat box */
-#chat {
-    max-width: 1000px;
-    padding: 50px;
-    background: rgba(18, 18, 18, 0.95);
-    border: 1px solid rgba(179, 57, 241, 0.3);
-    position: relative; 
-    display: none;
-}
-  #chat.active {
-    display: block;
-  }
-  
-  #top-left-buttons {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    display: flex;
-    align-items: center;
-  }
-  
-  #logoutBtn, #deleteAccountBtn {
-    background: none;
-    border: none;
-    color: #ff4d4d; 
-    font-size: 18px;
-    cursor: pointer;
-    transition: color 0.3s ease;
-  }
-  
-  #logoutBtn:hover, #deleteAccountBtn:hover {
-    color: #ff1a1a;
-  }
-  
-  #logoutBtn i, #deleteAccountBtn i {
-    font-size: 24px;
-  }
-  
-  .message-input-container {
-    display: flex;
-    align-items: center;
-    width: 100%;
-  }
-  
-  #messageInput {
-    flex: 1;
-    padding: 15px;
-    margin-right: 10px;
-    border: none;
-    border-radius: 20px;
-    background: #2a2a2a;
-    color: #e0e0e0;
-    box-shadow: inset 0px 2px 5px rgba(0, 0, 0, 0.5);
-    font-size: 16px;
-  }
-  
-  #messageInput:focus {
-    outline: none;
+#messages::-webkit-scrollbar-thumb {
     background: #333333;
-  }
-  
-  #sendBtn {
-    background: none;
-    border: none;
-    color: #28a745;
-    max-width: 50px;
-    font-size: 24px;
-    cursor: pointer;
-  }
-  
-  #sendBtn:hover {
-    color: #218838;
-  }
-  
-  #sendBtn i {
-    font-size: 24px;
-  }
-  
+}
 
-  h2 {
+#messages::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.message {
+    padding: 12px 0;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #111111;
+    background: transparent;
+    color: #ffffff;
+    font-weight: 300;
+}
+
+.message:last-child {
+    border-bottom: none;
+}
+
+.link {
     text-align: center;
-    margin-bottom: 20px;
-    font-size: 24px;
-    font-family: "Roboto", "Nunito", sans-serif;
-    font-weight: bold;
-    color: #ffffff;
-  }
-  
-  input, button {
-    width: 100%;
-    padding: 12px;
-    margin: 10px 0;
-    border: none;
-    border-radius: 10px;
-    font-size: 16px;
-    transition: all 0.3s ease;
-    font-family: "Inter", sans-serif;
-  }
-  
-  input {
-    background: #2a2a2a;
-    color: #e0e0e0;
-    box-shadow: inset 0px 2px 5px rgba(0, 0, 0, 0.5);
-  }
-  
-  input:focus {
-    outline: none;
-    background: #333333;
-  }
-  
-  button {
-    font-family: "Roboto", sans-serif;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: #ffffff;
-  }
-  
-  button {
-    padding: 10px 20px;
-    margin: 5px;
-    border: none;
-    border-radius: 5px;
+    margin-top: 20px;
+    color: #666666;
     cursor: pointer;
-  }
-  
-  #loginBtn {
-    background: linear-gradient(145deg, #007bff, #0056b3); 
-  }
-  
-  #loginBtn:hover {
-    background: linear-gradient(145deg, #0056b3, #004085);
-    transform: scale(1.05);
-  }
-  
-  #signupBtn {
-    background: linear-gradient(145deg, #fd7e14, #e65100); 
-  }
-  
-  #signupBtn:hover {
-    background: linear-gradient(145deg, #e65100, #cc5200);
-    transform: scale(1.05);
-  }
-  
-  #menu button {
-    background: linear-gradient(145deg, #6c757d, #495057); 
-  }
-  
-  #menu button:hover {
-    background: linear-gradient(145deg, #495057, #343a40);
-    transform: scale(1.05);
-  }
-  
-  #backToMenuFromJoin, #backToMenuFromJoin {
-    background: linear-gradient(145deg, #6c757d, #495057); 
-  }
-  
-  #backToMenuFromJoin:hover, #backToMenuFromJoin:hover {
-    background: linear-gradient(145deg, #495057, #343a40);
-    transform: scale(1.05);
-  }
-  #backToMenuFromCreate, #backToMenuFromJoin {
-    background: linear-gradient(145deg, #6c757d, #495057); 
-  }
-  
-  #backToMenuFromCreate:hover, #backToMenuFromJoin:hover {
-    background: linear-gradient(145deg, #495057, #343a40);
-    transform: scale(1.05);
-  }
-  #joinPartySubmitBtn {
-    background: linear-gradient(145deg, #28a745, #218838); 
-  }
-  
-  #joinPartySubmitBtn:hover {
-    background: linear-gradient(145deg, #218838, #1e7e34);
-    transform: scale(1.05);
-  }
-  
-  #leavePartyBtn {
-    background-color: #f44336; 
-    color: white; 
-    display: inline-block; 
-    margin-top: 10px;
-  }
-
-  #deletePartyBtn {
-    background-color: #f44336;
-    color: white; 
-    display: inline-block; 
-    margin-top: 10px; 
-  } 
-  
-  #messages {
-    height: 600px;
-    overflow-y: auto;
-    margin-bottom: 15px;
-    padding: 15px;
-    background: #292929;
-    border-radius: 10px;
-    box-shadow: inset 0px 2px 5px rgba(0, 0, 0, 0.5);
-    font-family: "Nunito", sans-serif;
+    transition: color 0.15s ease;
+    font-weight: 300;
     font-size: 14px;
-  }
-  
-  #messages::-webkit-scrollbar {
-    width: 10px;
-  }
-  
-  #messages::-webkit-scrollbar-thumb {
-    background: #444444;
-    border-radius: 10px;
-  }
-  
-  #messages::-webkit-scrollbar-thumb:hover {
-    background: #555555;
-  }
-  
-  #messages::-webkit-scrollbar-track {
-    background: #2a2a2a;
-    border-radius: 10px;
-  }
-  
-  .message {
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 10px;
-    background: #3a3a3a;
-    color: #e0e0e0;
-  }
-  
-  .message:nth-child(odd) {
-    background: #333333;
-  }
-  
-  .link {
-    text-align: center;
-    margin-top: 15px;
-    color: #808080;
-    cursor: pointer;
-    transition: color 0.3s ease;
-    font-family: "Roboto", sans-serif;
-  }
-  
-  .link:hover {
-    color: #a0a0a0;
-    text-decoration: underline;
-  }
-  
-  .password-container {
+}
+
+.link:hover {
+    color: #ffffff;
+}
+
+.password-container {
     position: relative;
-  }
-  .toggle-password {
+}
+
+.toggle-password {
     position: absolute;
     top: 50%;
-    right: 10px;
+    right: 16px;
     transform: translateY(-50%);
     cursor: pointer;
-    color: #e0e0e0;
-  }
-  
-  @media (max-width: 600px) {
+    color: #666666;
+    transition: color 0.15s ease;
+}
+
+.toggle-password:hover {
+    color: #ffffff;
+}
+
+@media (max-width: 600px) {
     #login, #signup, #chat, #menu, #createParty, #joinParty {
-      max-width: 100%;
-      padding: 20px;
-      border-radius: 10px;
+        max-width: 100%;
+        padding: 30px;
     }
     input, button {
-      font-size: 14px;
-      padding: 10px;
+        font-size: 14px;
+        padding: 14px;
     }
-  }
+}
 
-  #top-right-buttons {
+#top-right-buttons {
     position: absolute;
-    top: 10px;
-    right: 10px;
-  }
+    top: 15px;
+    right: 15px;
+}
 
-  .dropdown {
+.dropdown {
     position: relative;
     display: inline-block;
-  }
+}
 
-  .dropbtn {
-    background-color: #333; 
-    color: white;
-    padding: 10px;
+.dropbtn {
+    background: transparent;
+    color: #666666;
+    padding: 8px;
     font-size: 16px;
-    border: none;
+    border: 1px solid #333333;
     cursor: pointer;
-    border-radius: 5px;
-  }
+    transition: all 0.15s ease;
+    width: auto;
+    margin: 0;
+}
 
-  .dropdown-content {
+.dropbtn:hover {
+    color: #ffffff;
+    border-color: #666666;
+    background: #111111;
+}
+
+.dropdown-content {
     display: none;
     position: absolute;
-    background-color: #444; 
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1;
-    border-radius: 5px;
-    overflow: hidden;
-  }
+    right: 0;
+    background: #000000;
+    min-width: 180px;
+    border: 1px solid #333333;
+    z-index: 1000;
+}
 
-  .dropdown-content button {
-    color: white; 
+.dropdown-content button {
+    color: #666666;
     padding: 12px 16px;
-    text-decoration: none;
     display: block;
     width: 100%;
     border: none;
     background: none;
     text-align: left;
     cursor: pointer;
-  }
+    transition: color 0.15s ease;
+    font-weight: 300;
+    font-size: 14px;
+}
 
-  .dropdown-content button:hover {
-    background-color: #555; 
-  }
+.dropdown-content button:hover {
+    color: #ffffff;
+    background: #111111;
+}
 
-  .dropdown:hover .dropdown-content {
+.dropdown:hover .dropdown-content {
     display: block;
-  }
+}
 
-  .dropdown:hover .dropbtn {
-    background-color: #555; 
-  }
-
-  #top-left-buttons button {
-    background-color: #333;
-    color: white;
-    padding: 10px;
+#top-left-buttons button {
+    background: transparent;
+    color: #666666;
+    padding: 8px;
     font-size: 16px;
-    border: none;
+    border: 1px solid #333333;
     cursor: pointer;
-    border-radius: 5px;
     margin-right: 10px;
-  }
+    width: auto;
+    transition: all 0.15s ease;
+}
 
-  #top-left-buttons span {
-    color: white;
-    font-size: 16px;
-  }
+#top-left-buttons button:hover {
+    color: #ffffff;
+    border-color: #666666;
+    background: #111111;
+}
 
-  #menu {
-    display: none; 
-  }
-
-  #menu.active {
-    display: block; 
-  }
-
-  .container {
+#menu {
     display: none;
-  }
+}
 
-  .container.active {
-    display: block; 
-  }
+#menu.active {
+    display: block;
+}
 
-  #partyCodeContainer {
+.container {
+    display: none;
+}
+
+.container.active {
+    display: block;
+}
+
+#partyCodeContainer {
     display: flex;
     justify-content: center;
     align-items: center;
     margin: 20px auto;
-    font-size: 16px;
-    color: white;
-  }
+    font-size: 14px;
+    color: #666666;
+    font-weight: 300;
+    letter-spacing: 1px;
+}
 
-  #toast-container {
+#toast-container {
     position: fixed;
-    top: 20px;
-    right: 20px;
+    top: 30px;
+    right: 30px;
     z-index: 1000;
-  }
+}
 
-  .toast {
-    background-color: #333;
-    color: white;
-    padding: 10px 20px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+.toast {
+    background: #000000;
+    color: #ffffff;
+    padding: 16px 24px;
+    margin-bottom: 12px;
+    border: 1px solid #333333;
     opacity: 0;
-    transition: opacity 0.5s ease-in-out;
-  }
+    transition: opacity 0.3s ease;
+    font-weight: 300;
+    font-size: 14px;
+}
 
-  .toast.show {
+.toast.show {
     opacity: 1;
-  }
+}
