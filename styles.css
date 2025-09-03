@@ -98,11 +98,11 @@ body::before {
 
 h2 {
     text-align: center;
-    margin-bottom: 32px;
-    font-size: 28px;
+    margin-bottom: 40px;
+    font-size: 32px;
     font-weight: 200;
     color: var(--text-primary);
-    letter-spacing: 1.5px;
+    letter-spacing: 2px;
     text-transform: lowercase;
     font-family: 'JetBrains Mono', monospace;
 }
@@ -773,11 +773,12 @@ input:focus {
 
 .particle {
     position: absolute;
-    width: 2px;
-    height: 2px;
+    width: 1px;
+    height: 1px;
     background: var(--text-muted);
     border-radius: 50%;
-    animation: float-particle 8s infinite linear;
+    opacity: 0.4;
+    animation: float-particle 12s infinite linear;
 }
 
 @keyframes float-particle {
@@ -997,21 +998,23 @@ button:focus-visible, input:focus-visible {
 /* Online counter */
 .online-counter {
     position: relative;
-    background: var(--border-secondary);
+    background: transparent;
     border: 1px solid var(--border-primary);
-    border-radius: 8px;
-    padding: 8px 12px;
-    font-size: 12px;
+    border-radius: 20px;
+    padding: 10px 16px;
+    font-size: 11px;
     color: var(--text-secondary);
     cursor: pointer;
     transition: all 0.2s ease;
     font-weight: 300;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
 }
 
 .online-counter:hover {
-    background: var(--hover-bg);
+    background: var(--border-secondary);
     color: var(--text-primary);
+    border-color: var(--border-primary);
 }
 
 .online-tooltip {
@@ -1020,22 +1023,26 @@ button:focus-visible, input:focus-visible {
     bottom: 100%;
     left: 50%;
     transform: translateX(-50%);
-    margin-bottom: 8px;
+    margin-bottom: 12px;
     background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border);
-    border-radius: 8px;
-    padding: 12px;
+    backdrop-filter: blur(25px);
+    border: 1px solid var(--border-primary);
+    border-radius: 12px;
+    padding: 16px 20px;
     white-space: nowrap;
     font-size: 11px;
     color: var(--text-primary);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
     z-index: 1001;
+    min-width: 120px;
+    text-align: center;
 }
 
 .online-tooltip div {
-    padding: 2px 0;
-    color: var(--text-secondary);
+    padding: 4px 0;
+    color: var(--text-primary);
+    font-size: 12px;
+    letter-spacing: 0.5px;
 }
 
 .main-actions {

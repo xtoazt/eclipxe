@@ -52,13 +52,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
   requestNotificationPermission();
 
-  // Firebase online users tracking
+  // Firebase online users tracking with heartbeat system
+  let heartbeatInterval;
+  
+  function startHeartbeat(username) {
+    // Update user's last seen timestamp every 15 seconds
+    heartbeatInterval = setInterval(() => {
+      set(ref(db, `online/${username}`), Date.now());
+    }, 15000);
+    
+    // Initial heartbeat
+    set(ref(db, `online/${username}`), Date.now());
+  }
+  
+  function stopHeartbeat(username) {
+    if (heartbeatInterval) {
+      clearInterval(heartbeatInterval);
+    }
+    set(ref(db, `online/${username}`), null);
+  }
+  
   function updateOnlineUsers() {
     onValue(ref(db, 'online'), (snapshot) => {
-      const onlineUsers = snapshot.val() || {};
-      const userList = Object.keys(onlineUsers).filter(user => onlineUsers[user]);
-      onlineCount.textContent = userList.length;
-      onlineTooltip.innerHTML = userList.map(user => `<div>${user}</div>`).join('') || '<div>no users online</div>';
+      const onlineData = snapshot.val() || {};
+      const now = Date.now();
+      const thirtySecondsAgo = now - (30 * 1000); // 30 seconds threshold
+      
+      // Filter users who have been active in last 30 seconds
+      const activeUsers = Object.keys(onlineData).filter(user => {
+        const lastSeen = onlineData[user];
+        return lastSeen && lastSeen > thirtySecondsAgo;
+      });
+      
+      onlineCount.textContent = activeUsers.length;
+      onlineTooltip.innerHTML = activeUsers.length > 0 
+        ? activeUsers.map(user => `<div>${user}</div>`).join('') 
+        : '<div>no users online</div>';
     });
   }
 
@@ -162,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
   window.joinSavedParty = (code) => {
     localStorage.setItem('partyCode', code);
     partyCodeDisplay.textContent = code;
-    savedPartiesDiv.style.display = 'none';
+    menuDiv.style.display = 'none';
     loadPartyChat(code);
   };
 
@@ -297,7 +326,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(snapshot => {
           if (snapshot.exists() && snapshot.val().password === password) {
             localStorage.setItem('user', JSON.stringify({ username }));
-            set(ref(db, `online/${username}`), true);
+            startHeartbeat(username);
             showMenu();
             showToast('Login successful.');
           } else {
@@ -355,7 +384,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   logoutBtn.addEventListener('click', () => {
     const currentUser = JSON.parse(localStorage.getItem('user'));
-    set(ref(db, `online/${currentUser.username}`), null);
+    stopHeartbeat(currentUser.username);
     localStorage.removeItem('user');
     chatDiv.style.display = 'none';
     loginDiv.style.display = 'block';
@@ -378,7 +407,8 @@ document.addEventListener('DOMContentLoaded', () => {
           // Remove the user from the online users list
           set(onlineRef, null)
             .then(() => {
-              // Clear the local storage
+              // Clear the local storage and stop heartbeat
+              stopHeartbeat(username);
               localStorage.removeItem('user');
               showToast('Your account has been deleted.');
               window.location.reload(); // Reload the page
@@ -392,13 +422,13 @@ document.addEventListener('DOMContentLoaded', () => {
   // Function to generate a memorable but secure party code
   function generatePartyCode() {
     const adjectives = ['COOL', 'EPIC', 'FAST', 'WILD', 'DARK', 'NEON', 'CYBER', 'NOVA', 'FLUX', 'ZETA'];
-    const nouns = ['WOLF', 'HAWK', 'STORM', 'FIRE', 'WAVE', 'BYTE', 'CODE', 'STAR', 'TECH', 'CORE'];
-    const numbers = Math.floor(Math.random() * 99) + 1;
+    const nouns = ['WOLF', 'HAWK', 'FIRE', 'WAVE', 'BYTE', 'CODE', 'STAR', 'TECH', 'CORE'];
+    const numbers = Math.floor(Math.random() * 9) + 1;
     
     const adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
     const noun = nouns[Math.floor(Math.random() * nouns.length)];
     
-    return `${adjective}${noun}${numbers.toString().padStart(2, '0')}`;
+    return `${adjective}${noun}${numbers}`;
   }
 
   // Function to show the menu
@@ -668,12 +698,10 @@ document.addEventListener('DOMContentLoaded', () => {
       .catch(err => console.error('Error checking party creator: ' + err));
   }
 
-  function loadChat() {
-    showMenu();
-  }
 
   const currentUser = JSON.parse(localStorage.getItem('user'));
   if (currentUser) {
+    startHeartbeat(currentUser.username);
     showMenu();
   } else {
     loginDiv.style.display = 'block';
@@ -699,14 +727,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // Create particle effects
   function createParticles() {
     const particlesContainer = document.getElementById('particles');
-    const particleCount = 15;
+    const particleCount = 8;
     
     for (let i = 0; i < particleCount; i++) {
       const particle = document.createElement('div');
       particle.className = 'particle';
       particle.style.left = Math.random() * 100 + '%';
-      particle.style.animationDelay = Math.random() * 8 + 's';
-      particle.style.animationDuration = (Math.random() * 4 + 6) + 's';
+      particle.style.animationDelay = Math.random() * 12 + 's';
+      particle.style.animationDuration = (Math.random() * 6 + 10) + 's';
       particlesContainer.appendChild(particle);
     }
   }
