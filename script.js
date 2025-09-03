@@ -15,8 +15,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// Socket.io connection
-const socket = io();
 
 document.addEventListener('DOMContentLoaded', () => {
   let isTabActive = true;
@@ -54,20 +52,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
   requestNotificationPermission();
 
-  // Socket.io event handlers
-  socket.on('users-update', (data) => {
-    onlineCount.textContent = data.count;
-    onlineTooltip.innerHTML = data.users.map(user => `<div>${user}</div>`).join('');
-  });
+  // Firebase online users tracking
+  function updateOnlineUsers() {
+    onValue(ref(db, 'online'), (snapshot) => {
+      const onlineUsers = snapshot.val() || {};
+      const userList = Object.keys(onlineUsers).filter(user => onlineUsers[user]);
+      onlineCount.textContent = userList.length;
+      onlineTooltip.innerHTML = userList.map(user => `<div>${user}</div>`).join('') || '<div>no users online</div>';
+    });
+  }
 
-  // Online counter hover functionality
-  onlineCounter.addEventListener('mouseenter', () => {
-    onlineTooltip.style.display = 'block';
-  });
+  // Online counter hover functionality  
+  function initializeOnlineCounter() {
+    if (onlineCounter && onlineTooltip) {
+      onlineCounter.addEventListener('mouseenter', () => {
+        onlineTooltip.style.display = 'block';
+      });
 
-  onlineCounter.addEventListener('mouseleave', () => {
-    onlineTooltip.style.display = 'none';
-  });
+      onlineCounter.addEventListener('mouseleave', () => {
+        onlineTooltip.style.display = 'none';
+      });
+      
+      updateOnlineUsers();
+    }
+  }
 
   // Theme management
   function initializeTheme() {
@@ -290,7 +298,6 @@ document.addEventListener('DOMContentLoaded', () => {
           if (snapshot.exists() && snapshot.val().password === password) {
             localStorage.setItem('user', JSON.stringify({ username }));
             set(ref(db, `online/${username}`), true);
-            socket.emit('user-login', username);
             showMenu();
             showToast('Login successful.');
           } else {
@@ -349,7 +356,6 @@ document.addEventListener('DOMContentLoaded', () => {
   logoutBtn.addEventListener('click', () => {
     const currentUser = JSON.parse(localStorage.getItem('user'));
     set(ref(db, `online/${currentUser.username}`), null);
-    socket.emit('user-logout');
     localStorage.removeItem('user');
     chatDiv.style.display = 'none';
     loginDiv.style.display = 'block';
@@ -668,7 +674,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const currentUser = JSON.parse(localStorage.getItem('user'));
   if (currentUser) {
-    socket.emit('user-login', currentUser.username);
     showMenu();
   } else {
     loginDiv.style.display = 'block';
@@ -686,9 +691,10 @@ document.addEventListener('DOMContentLoaded', () => {
     console.error('deletePartyBtn not found');
   }
 
-  // Initialize theme, notifications, and particles after all elements are defined
+  // Initialize theme, notifications, online counter, and particles after all elements are defined
   initializeTheme();
   initializeNotifications();
+  initializeOnlineCounter();
   
   // Create particle effects
   function createParticles() {
