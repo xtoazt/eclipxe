@@ -397,14 +397,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Function to generate a memorable but secure party code
   function generatePartyCode() {
-    const adjectives = ['COOL', 'EPIC', 'FAST', 'WILD', 'DARK', 'NEON', 'CYBER', 'NOVA', 'FLUX', 'ZETA'];
-    const nouns = ['WOLF', 'HAWK', 'FIRE', 'WAVE', 'BYTE', 'CODE', 'STAR', 'TECH', 'CORE'];
-    const numbers = Math.floor(Math.random() * 9) + 1;
+    const words = ['WOLF', 'HAWK', 'FIRE', 'WAVE', 'BYTE', 'STAR', 'TECH', 'CORE', 'FLUX', 'NOVA'];
+    const numbers = Math.floor(Math.random() * 99) + 10;
     
-    const adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
-    const noun = nouns[Math.floor(Math.random() * nouns.length)];
+    const word = words[Math.floor(Math.random() * words.length)];
     
-    return `${adjective}${noun}${numbers}`;
+    return `${word}${numbers}`;
   }
 
   // Function to show the menu

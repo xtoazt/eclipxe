@@ -21,7 +21,7 @@
 
 body {
     font-family: 'JetBrains Mono', 'SF Mono', Monaco, 'Cascadia Code', monospace;
-    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-primary) 100%);
+    background: radial-gradient(ellipse at center, #0a0a0a 0%, #000000 70%);
     color: var(--text-primary);
     display: flex;
     justify-content: center;
@@ -30,9 +30,8 @@ body {
     overflow: hidden;
     position: relative;
     font-size: 14px;
-    line-height: 1.5;
+    line-height: 1.6;
     font-weight: 300;
-    transition: all 0.3s ease;
 }
 
 body::before {
@@ -286,16 +285,16 @@ button:hover {
 }
 
 #messages {
-    height: 520px;
+    height: 480px;
     overflow-y: auto;
-    margin-bottom: 24px;
-    padding: 24px;
+    margin-bottom: 32px;
+    padding: 32px;
     background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 20px;
     font-size: 13px;
-    line-height: 1.6;
-    backdrop-filter: blur(10px);
+    line-height: 1.7;
+    backdrop-filter: blur(15px);
 }
 
 #messages::-webkit-scrollbar {
@@ -312,14 +311,15 @@ button:hover {
 }
 
 .message {
-    padding: 16px 0;
-    margin-bottom: 4px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    padding: 12px 0;
+    margin-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
     background: transparent;
-    color: #ffffff;
+    color: var(--text-primary);
     font-weight: 300;
     font-size: 13px;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.5px;
+    transition: all 0.2s ease;
 }
 
 .message:last-child {
@@ -330,9 +330,10 @@ button:hover {
     display: flex;
     align-items: center;
     width: 100%;
-    gap: 16px;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    padding-top: 24px;
+    gap: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    padding-top: 32px;
+    margin-top: 8px;
 }
 
 #messageInput {
@@ -343,24 +344,24 @@ button:hover {
 }
 
 #sendBtn {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.6);
-    width: 56px;
-    height: 56px;
-    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.7);
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0;
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    transition: all 0.2s ease;
 }
 
 #sendBtn:hover {
     color: #ffffff;
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
-    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.25);
+    transform: scale(1.05);
 }
 
 #sendBtn i {
@@ -371,17 +372,17 @@ button:hover {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 24px auto;
-    padding: 12px 24px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 20px;
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.6);
-    font-weight: 300;
-    letter-spacing: 3px;
+    margin: 32px auto;
+    padding: 16px 32px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    font-size: 14px;
+    color: var(--text-primary);
+    font-weight: 400;
+    letter-spacing: 4px;
     text-transform: uppercase;
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(15px);
 }
 
 #leavePartyBtn, #deletePartyBtn {
@@ -525,11 +526,22 @@ input:focus, button:focus {
 
 /* Enhanced title styling */
 h2 span {
-    background: linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.9) 100%);
+    background: linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.85) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    text-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
+    position: relative;
+}
+
+h2 span::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
 }
 
 /* Pulse effect for party code */
@@ -643,12 +655,13 @@ input:focus {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 16px;
-    margin: 8px 0;
-    background: var(--border-secondary);
-    border: 1px solid var(--border-primary);
-    border-radius: 12px;
+    padding: 20px 24px;
+    margin: 12px 0;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
     transition: all 0.2s ease;
+    backdrop-filter: blur(10px);
 }
 
 .saved-party-item:hover {
@@ -1077,13 +1090,14 @@ button:focus-visible, input:focus-visible {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 16px;
-    margin: 6px 0;
-    background: var(--bg-primary);
-    border: 1px solid var(--border-primary);
-    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 10px 0;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
     transition: all 0.2s ease;
     cursor: pointer;
+    backdrop-filter: blur(8px);
 }
 
 .sidebar-party-item:hover {
