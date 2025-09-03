@@ -732,3 +732,85 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 });
+// ✅ Utility: format timestamp into HH:MM
+function formatTimestamp(ts) {
+  const date = new Date(ts);
+  const hours = date.getHours().toString().padStart(2, '0');
+  const minutes = date.getMinutes().toString().padStart(2, '0');
+  return `${hours}:${minutes}`;
+}
+
+// ✅ Send message with timestamp
+sendBtn.addEventListener('click', () => {
+  const currentUser = JSON.parse(localStorage.getItem('user'));
+  const text = messageInput.value.trim();
+  const partyCode = localStorage.getItem('partyCode');
+
+  if (text) {
+    const messagesRef = partyCode ? ref(db, `parties/${partyCode}/messages`) : ref(db, 'messages');
+    push(messagesRef, { 
+      username: currentUser.username, 
+      text, 
+      timestamp: Date.now()  // 🔹 add timestamp
+    });
+    messageInput.value = '';
+  }
+});
+
+// ✅ Display messages with timestamp
+function renderMessages(messages, currentUser) {
+  messagesDiv.innerHTML = '';
+  const messageArray = [];
+
+  for (const key in messages) {
+    messageArray.push(messages[key]);
+  }
+
+  messageArray.sort((a, b) => a.timestamp - b.timestamp); // sort by time
+
+  for (const msg of messageArray) {
+    const div = document.createElement('div');
+    div.className = 'message';
+    const timeStr = msg.timestamp ? `[${formatTimestamp(msg.timestamp)}]` : '';
+    div.textContent = `${timeStr} ${msg.username}: ${msg.text}`;
+    messagesDiv.appendChild(div);
+  }
+
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+// ✅ Update where messages are loaded
+function loadPartyChat(partyCode) {
+  chatDiv.style.display = 'block';
+  const currentUser = JSON.parse(localStorage.getItem('user'));
+  displayName.textContent = currentUser.username;
+  partyCodeDisplay.textContent = partyCode;
+
+  const messagesRef = ref(db, `parties/${partyCode}/messages`);
+  let lastMessageCount = 0;
+
+  onValue(messagesRef, (snapshot) => {
+    const messages = snapshot.val() || {};
+    renderMessages(messages, currentUser);
+
+    // 🔔 Notifications still work
+    const messageArray = Object.values(messages);
+    if (messageArray.length > lastMessageCount && lastMessageCount > 0) {
+      const newMessage = messageArray[messageArray.length - 1];
+      if (newMessage.username !== currentUser.username) {
+        showNotification(newMessage.username, newMessage.text);
+      }
+    }
+    lastMessageCount = messageArray.length;
+  });
+
+  get(ref(db, `parties/${partyCode}`))
+    .then(snapshot => {
+      if (snapshot.exists() && snapshot.val().creator === currentUser.username) {
+        deletePartyBtn.style.display = 'block';
+      } else {
+        deletePartyBtn.style.display = 'none';
+      }
+    })
+    .catch(err => console.error('Error checking party creator: ' + err));
+}
