@@ -106,26 +106,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Theme management
-  function initializeTheme() {
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    document.documentElement.setAttribute('data-theme', savedTheme);
-    updateThemeIcon(savedTheme);
-  }
-
-  function updateThemeIcon(theme) {
-    const icon = themeToggleSettings.querySelector('i');
-    icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-    themeToggleSettings.classList.toggle('active', theme === 'light');
-  }
-
-  function toggleTheme() {
-    const currentTheme = document.documentElement.getAttribute('data-theme');
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
-    updateThemeIcon(newTheme);
-  }
 
   // Saved parties management
   function getSavedParties() {
@@ -233,11 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const partyCodeDisplay = document.getElementById('partyCodeDisplay');
   const deletePartyBtn = document.getElementById('deletePartyBtn');
   const savePartyBtn = document.getElementById('savePartyBtn');
-  const themeToggleSettings = document.getElementById('themeToggleSettings');
   const notificationsToggle = document.getElementById('notificationsToggle');
-  const settingsBtn = document.getElementById('settingsBtn');
-  const settingsDropdown = document.getElementById('settingsDropdown');
-  const settingsContent = document.getElementById('settingsContent');
   const menuSavedPartiesList = document.getElementById('menuSavedPartiesList');
   const savePartyModal = document.getElementById('savePartyModal');
   const partyNameInput = document.getElementById('partyNameInput');
@@ -541,11 +517,6 @@ document.addEventListener('DOMContentLoaded', () => {
   backToMenuFromCreate.addEventListener('click', showMenu);
   backToMenuFromJoin.addEventListener('click', showMenu);
 
-  // Settings functionality
-  themeToggleSettings.addEventListener('click', (e) => {
-    e.stopPropagation();
-    toggleTheme();
-  });
 
   // Notifications toggle
   function initializeNotifications() {
@@ -572,28 +543,7 @@ document.addEventListener('DOMContentLoaded', () => {
     showToast(`Notifications ${newState ? 'enabled' : 'disabled'}`);
   }
 
-  notificationsToggle.addEventListener('click', (e) => {
-    e.stopPropagation();
-    toggleNotifications();
-  });
-
-  // Settings dropdown management
-  settingsBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    settingsDropdown.classList.toggle('open');
-  });
-
-  // Close settings when clicking outside
-  document.addEventListener('click', (e) => {
-    if (!settingsDropdown.contains(e.target)) {
-      settingsDropdown.classList.remove('open');
-    }
-  });
-
-  // Prevent settings content from closing when clicking inside
-  settingsContent.addEventListener('click', (e) => {
-    e.stopPropagation();
-  });
+  notificationsToggle.addEventListener('click', toggleNotifications);
 
 
   // Save party functionality
@@ -719,8 +669,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.error('deletePartyBtn not found');
   }
 
-  // Initialize theme, notifications, online counter, and particles after all elements are defined
-  initializeTheme();
+  // Initialize notifications, online counter, and particles after all elements are defined
   initializeNotifications();
   initializeOnlineCounter();
   

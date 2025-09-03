@@ -12,19 +12,6 @@
     --hover-bg: rgba(255, 255, 255, 0.1);
 }
 
-[data-theme="light"] {
-    --bg-primary: #fafafa;
-    --bg-secondary: #f5f5f5;
-    --bg-tertiary: #eeeeee;
-    --text-primary: #1a1a1a;
-    --text-secondary: rgba(26, 26, 26, 0.7);
-    --text-muted: rgba(26, 26, 26, 0.5);
-    --border-primary: rgba(26, 26, 26, 0.15);
-    --border-secondary: rgba(26, 26, 26, 0.08);
-    --glass-bg: rgba(255, 255, 255, 0.85);
-    --glass-border: rgba(26, 26, 26, 0.12);
-    --hover-bg: rgba(26, 26, 26, 0.08);
-}
 
 * {
     margin: 0;
@@ -56,39 +43,39 @@ body::before {
     width: 100%;
     height: 100%;
     background: 
-        radial-gradient(circle at 20% 50%, rgba(120, 120, 120, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(80, 80, 80, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 40% 80%, rgba(100, 100, 100, 0.05) 0%, transparent 50%);
+        radial-gradient(circle at 25% 40%, rgba(80, 80, 120, 0.12) 0%, transparent 60%),
+        radial-gradient(circle at 75% 20%, rgba(120, 80, 100, 0.1) 0%, transparent 60%),
+        radial-gradient(circle at 45% 85%, rgba(100, 120, 80, 0.08) 0%, transparent 60%);
     pointer-events: none;
     z-index: -1;
 }
 
 #login, #signup, #chat, #menu, #createParty, #joinParty, #savedParties {
     display: none;
-    max-width: 480px;
+    max-width: 500px;
     width: 90%;
-    padding: 60px 48px;
+    padding: 48px;
     background: var(--glass-bg);
-    backdrop-filter: blur(20px);
+    backdrop-filter: blur(25px);
     border: 1px solid var(--glass-border);
-    border-radius: 20px;
+    border-radius: 24px;
     box-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.3),
+        0 12px 48px rgba(0, 0, 0, 0.4),
         inset 0 1px 0 var(--border-primary);
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 #chat {
-    max-width: 1000px;
-    padding: 48px;
+    max-width: 1100px;
+    padding: 56px;
     background: var(--glass-bg);
-    backdrop-filter: blur(25px);
+    backdrop-filter: blur(30px);
     border: 1px solid var(--border-secondary);
-    border-radius: 24px;
+    border-radius: 28px;
     position: relative;
     display: none;
     box-shadow: 
-        0 20px 60px rgba(0, 0, 0, 0.4),
+        0 24px 80px rgba(0, 0, 0, 0.5),
         inset 0 1px 0 var(--border-primary);
 }
 
@@ -98,8 +85,8 @@ body::before {
 
 h2 {
     text-align: center;
-    margin-bottom: 40px;
-    font-size: 32px;
+    margin-bottom: 36px;
+    font-size: 28px;
     font-weight: 200;
     color: var(--text-primary);
     letter-spacing: 2px;
@@ -119,14 +106,14 @@ h3 {
 
 input, button {
     width: 100%;
-    padding: 20px 24px;
-    margin: 16px 0;
+    padding: 18px 24px;
+    margin: 12px 0;
     border: 1px solid var(--border-primary);
     background: var(--border-secondary);
     backdrop-filter: blur(10px);
-    border-radius: 10px;
+    border-radius: 12px;
     font-size: 14px;
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    transition: all 0.2s ease;
     font-weight: 300;
     font-family: 'JetBrains Mono', monospace;
 }
@@ -907,45 +894,6 @@ button::before {
     animation: slideInMessage 0.3s ease;
 }
 
-/* Light mode specific enhancements */
-[data-theme="light"] body {
-    background: linear-gradient(135deg, #fafafa 0%, #f0f0f0 50%, #fafafa 100%);
-}
-
-[data-theme="light"] body::before {
-    background: 
-        radial-gradient(circle at 20% 50%, rgba(100, 150, 255, 0.08) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(255, 100, 150, 0.06) 0%, transparent 50%),
-        radial-gradient(circle at 40% 80%, rgba(150, 255, 100, 0.05) 0%, transparent 50%);
-}
-
-[data-theme="light"] .particle {
-    background: rgba(26, 26, 26, 0.3);
-}
-
-[data-theme="light"] .container {
-    box-shadow: 
-        0 8px 40px rgba(0, 0, 0, 0.08),
-        inset 0 1px 0 rgba(255, 255, 255, 0.8);
-}
-
-[data-theme="light"] .menu-container,
-[data-theme="light"] .saved-parties-container {
-    box-shadow: 
-        0 8px 40px rgba(0, 0, 0, 0.08),
-        inset 0 1px 0 rgba(255, 255, 255, 0.8);
-}
-
-[data-theme="light"] button:hover {
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-}
-
-[data-theme="light"] input:focus {
-    box-shadow: 
-        0 0 0 1px rgba(100, 150, 255, 0.3),
-        0 0 20px rgba(100, 150, 255, 0.1);
-    border-color: rgba(100, 150, 255, 0.4);
-}
 
 /* Enhanced container hover effects */
 .container:hover {
@@ -979,28 +927,28 @@ button:focus-visible, input:focus-visible {
 
 .menu-container {
     background: var(--glass-bg);
-    backdrop-filter: blur(20px);
+    backdrop-filter: blur(25px);
     border: 1px solid var(--glass-border);
-    border-radius: 20px;
-    padding: 40px;
+    border-radius: 24px;
+    padding: 48px;
     width: 100%;
-    max-width: 500px;
+    max-width: 520px;
     box-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.3),
+        0 12px 48px rgba(0, 0, 0, 0.4),
         inset 0 1px 0 var(--border-primary);
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .saved-parties-container {
     background: var(--glass-bg);
-    backdrop-filter: blur(20px);
+    backdrop-filter: blur(25px);
     border: 1px solid var(--glass-border);
-    border-radius: 20px;
-    padding: 32px;
+    border-radius: 24px;
+    padding: 40px;
     width: 100%;
-    max-width: 500px;
+    max-width: 520px;
     box-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.3),
+        0 12px 48px rgba(0, 0, 0, 0.4),
         inset 0 1px 0 var(--border-primary);
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
@@ -1009,7 +957,7 @@ button:focus-visible, input:focus-visible {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 48px;
+    margin-bottom: 40px;
 }
 
 .menu-header h2 {
@@ -1076,7 +1024,7 @@ button:focus-visible, input:focus-visible {
 .main-actions {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 16px;
 }
 
 .main-actions button {
@@ -1094,88 +1042,34 @@ button:focus-visible, input:focus-visible {
     letter-spacing: 1px;
 }
 
-/* Settings dropdown */
-.settings-dropdown {
-    position: relative;
-}
-
-.settings-btn {
-    background: var(--border-secondary);
+/* Notification button */
+.notification-btn {
+    background: transparent;
     border: 1px solid var(--border-primary);
     color: var(--text-secondary);
     padding: 12px;
-    font-size: 16px;
+    font-size: 14px;
     cursor: pointer;
-    border-radius: 10px;
+    border-radius: 20px;
     width: auto;
     margin: 0;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
 }
 
-.settings-btn:hover {
+.notification-btn:hover {
     color: var(--text-primary);
-    background: var(--hover-bg);
+    background: var(--border-secondary);
     border-color: var(--border-primary);
 }
 
-.settings-content {
-    display: none;
-    position: absolute;
-    right: 0;
-    top: 100%;
-    margin-top: 8px;
-    background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    min-width: 220px;
-    border: 1px solid var(--glass-border);
-    border-radius: 12px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-    overflow: hidden;
-}
-
-.settings-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--border-secondary);
-    font-size: 13px;
-    color: var(--text-primary);
-    font-weight: 300;
-}
-
-.settings-item:last-child {
-    border-bottom: none;
-}
-
-.toggle-btn {
-    background: var(--border-secondary);
-    border: 1px solid var(--border-primary);
-    color: var(--text-secondary);
-    padding: 8px 12px;
-    font-size: 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    width: auto;
-    margin: 0;
-}
-
-.toggle-btn:hover {
-    color: var(--text-primary);
-    background: var(--hover-bg);
-}
-
-.toggle-btn.active {
+.notification-btn.active {
     background: var(--text-primary);
     color: var(--bg-primary);
     border-color: var(--text-primary);
 }
 
-.settings-dropdown.open .settings-content {
-    display: block;
-    animation: fadeInDown 0.3s ease;
+.notification-btn.active:hover {
+    background: var(--text-secondary);
 }
 
 /* Sidebar party items for islands */
@@ -1257,7 +1151,9 @@ input, button {
 .main-actions button {
     padding: 20px 24px;
     font-size: 15px;
-    margin: 6px 0;
+    margin: 0;
+    border-radius: 16px;
+    letter-spacing: 1px;
 }
 
 .main-actions button:hover {
