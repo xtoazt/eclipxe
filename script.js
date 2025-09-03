@@ -15,6 +15,9 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
+// Socket.io connection
+const socket = io();
+
 document.addEventListener('DOMContentLoaded', () => {
   let isTabActive = true;
   
@@ -50,6 +53,21 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   requestNotificationPermission();
+
+  // Socket.io event handlers
+  socket.on('users-update', (data) => {
+    onlineCount.textContent = data.count;
+    onlineTooltip.innerHTML = data.users.map(user => `<div>${user}</div>`).join('');
+  });
+
+  // Online counter hover functionality
+  onlineCounter.addEventListener('mouseenter', () => {
+    onlineTooltip.style.display = 'block';
+  });
+
+  onlineCounter.addEventListener('mouseleave', () => {
+    onlineTooltip.style.display = 'none';
+  });
 
   // Theme management
   function initializeTheme() {
@@ -189,6 +207,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const confirmSaveParty = document.getElementById('confirmSaveParty');
   const cancelSaveParty = document.getElementById('cancelSaveParty');
   const menuDisplayName = document.getElementById('menuDisplayName');
+  const onlineCounter = document.getElementById('onlineCounter');
+  const onlineCount = document.getElementById('onlineCount');
+  const onlineTooltip = document.getElementById('onlineTooltip');
 
   const togglePasswordVisibility = (input, toggleBtn) => {
     toggleBtn.addEventListener('click', () => {
@@ -269,6 +290,7 @@ document.addEventListener('DOMContentLoaded', () => {
           if (snapshot.exists() && snapshot.val().password === password) {
             localStorage.setItem('user', JSON.stringify({ username }));
             set(ref(db, `online/${username}`), true);
+            socket.emit('user-login', username);
             showMenu();
             showToast('Login successful.');
           } else {
@@ -327,6 +349,7 @@ document.addEventListener('DOMContentLoaded', () => {
   logoutBtn.addEventListener('click', () => {
     const currentUser = JSON.parse(localStorage.getItem('user'));
     set(ref(db, `online/${currentUser.username}`), null);
+    socket.emit('user-logout');
     localStorage.removeItem('user');
     chatDiv.style.display = 'none';
     loginDiv.style.display = 'block';
@@ -644,8 +667,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const currentUser = JSON.parse(localStorage.getItem('user'));
-  if (currentUser) showMenu();
-  else loginDiv.style.display = 'block';
+  if (currentUser) {
+    socket.emit('user-login', currentUser.username);
+    showMenu();
+  } else {
+    loginDiv.style.display = 'block';
+  }
 
   if (leavePartyBtn) {
     leavePartyBtn.addEventListener('click', leaveParty);
