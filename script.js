@@ -180,6 +180,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const savePartyBtn = document.getElementById('savePartyBtn');
   const themeToggleSettings = document.getElementById('themeToggleSettings');
   const notificationsToggle = document.getElementById('notificationsToggle');
+  const settingsBtn = document.getElementById('settingsBtn');
+  const settingsDropdown = document.getElementById('settingsDropdown');
+  const settingsContent = document.getElementById('settingsContent');
   const menuSavedPartiesList = document.getElementById('menuSavedPartiesList');
   const savePartyModal = document.getElementById('savePartyModal');
   const partyNameInput = document.getElementById('partyNameInput');
@@ -480,7 +483,10 @@ document.addEventListener('DOMContentLoaded', () => {
   backToMenuFromJoin.addEventListener('click', showMenu);
 
   // Settings functionality
-  themeToggleSettings.addEventListener('click', toggleTheme);
+  themeToggleSettings.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleTheme();
+  });
 
   // Notifications toggle
   function initializeNotifications() {
@@ -507,7 +513,28 @@ document.addEventListener('DOMContentLoaded', () => {
     showToast(`Notifications ${newState ? 'enabled' : 'disabled'}`);
   }
 
-  notificationsToggle.addEventListener('click', toggleNotifications);
+  notificationsToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleNotifications();
+  });
+
+  // Settings dropdown management
+  settingsBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    settingsDropdown.classList.toggle('open');
+  });
+
+  // Close settings when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!settingsDropdown.contains(e.target)) {
+      settingsDropdown.classList.remove('open');
+    }
+  });
+
+  // Prevent settings content from closing when clicking inside
+  settingsContent.addEventListener('click', (e) => {
+    e.stopPropagation();
+  });
 
 
   // Save party functionality

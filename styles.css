@@ -98,11 +98,11 @@ body::before {
 
 h2 {
     text-align: center;
-    margin-bottom: 40px;
-    font-size: 32px;
+    margin-bottom: 32px;
+    font-size: 28px;
     font-weight: 200;
     color: var(--text-primary);
-    letter-spacing: 2px;
+    letter-spacing: 1.5px;
     text-transform: lowercase;
     font-family: 'JetBrains Mono', monospace;
 }
@@ -119,15 +119,15 @@ h3 {
 
 input, button {
     width: 100%;
-    padding: 18px 24px;
-    margin: 12px 0;
+    padding: 16px 20px;
+    margin: 10px 0;
     border: 1px solid var(--border-primary);
     background: var(--border-secondary);
     backdrop-filter: blur(10px);
-    border-radius: 12px;
+    border-radius: 10px;
     font-size: 14px;
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    font-weight: 400;
+    font-weight: 300;
     font-family: 'JetBrains Mono', monospace;
 }
 
@@ -143,8 +143,8 @@ input::placeholder {
 button {
     color: var(--text-primary);
     cursor: pointer;
-    font-weight: 400;
-    letter-spacing: 1px;
+    font-weight: 300;
+    letter-spacing: 0.5px;
     text-transform: lowercase;
     position: relative;
     overflow: hidden;
@@ -868,28 +868,50 @@ button:focus-visible, input:focus-visible {
     outline-offset: 2px;
 }
 
-/* New menu layout with islands */
+/* New menu layout with separate containers */
 .menu-layout {
     display: none;
-    max-width: 1000px;
+    flex-direction: column;
+    gap: 24px;
+    align-items: center;
     width: 95%;
-    padding: 48px;
+    max-width: 1200px;
+    animation: fadeIn 0.4s ease;
+}
+
+.menu-container {
     background: var(--glass-bg);
     backdrop-filter: blur(20px);
     border: 1px solid var(--glass-border);
     border-radius: 20px;
+    padding: 40px;
+    width: 100%;
+    max-width: 500px;
     box-shadow: 
         0 8px 32px rgba(0, 0, 0, 0.3),
         inset 0 1px 0 var(--border-primary);
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    animation: fadeIn 0.4s ease, float 6s ease-in-out infinite;
+}
+
+.saved-parties-container {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 32px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 var(--border-primary);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .menu-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 40px;
+    margin-bottom: 32px;
 }
 
 .menu-header h2 {
@@ -897,42 +919,25 @@ button:focus-visible, input:focus-visible {
     text-align: left;
 }
 
-.menu-islands {
+.main-actions {
     display: flex;
-    gap: 32px;
-    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
 }
 
-.menu-island {
-    flex: 1;
+.main-actions button {
+    margin: 0;
     background: var(--border-secondary);
     border: 1px solid var(--border-primary);
-    border-radius: 16px;
-    padding: 24px;
-    backdrop-filter: blur(10px);
-    transition: all 0.3s ease;
 }
 
-.menu-island:hover {
-    background: var(--hover-bg);
-    border-color: var(--border-primary);
-    transform: translateY(-4px);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
-}
-
-.menu-island h3 {
-    margin-bottom: 20px;
-    font-size: 16px;
+.saved-parties-container h3 {
+    margin-bottom: 24px;
+    font-size: 20px;
     color: var(--text-secondary);
     text-align: center;
     font-weight: 300;
     letter-spacing: 1px;
-}
-
-.menu-island button {
-    margin: 8px 0;
-    background: transparent;
-    border: 1px solid var(--border-primary);
 }
 
 /* Settings dropdown */
@@ -1014,7 +1019,7 @@ button:focus-visible, input:focus-visible {
     border-color: var(--text-primary);
 }
 
-.settings-dropdown:hover .settings-content {
+.settings-dropdown.open .settings-content {
     display: block;
     animation: fadeInDown 0.3s ease;
 }
@@ -1081,26 +1086,87 @@ button:focus-visible, input:focus-visible {
     font-style: italic;
 }
 
-/* Responsive design for islands */
-@media (max-width: 900px) {
-    .menu-islands {
-        flex-direction: column;
-        gap: 24px;
-    }
-    
-    .menu-layout {
-        max-width: 420px;
-    }
+/* Enhanced container hover effects */
+.menu-container:hover, .saved-parties-container:hover {
+    border-color: var(--border-primary);
+    box-shadow: 
+        0 12px 40px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 var(--border-primary);
+    transform: translateY(-2px);
 }
 
+/* Improved spacing for all elements */
+input, button {
+    margin: 10px 0;
+}
+
+.main-actions button {
+    padding: 20px 24px;
+    font-size: 15px;
+    margin: 6px 0;
+}
+
+.main-actions button:hover {
+    background: var(--hover-bg);
+    border-color: var(--border-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Better spacing for saved parties */
+#menuSavedPartiesList {
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+.sidebar-party-item {
+    margin: 12px 0;
+    padding: 16px 20px;
+}
+
+.sidebar-party-item:first-child {
+    margin-top: 0;
+}
+
+.sidebar-party-item:last-child {
+    margin-bottom: 0;
+}
+
+/* Responsive design */
 @media (max-width: 600px) {
+    .menu-layout {
+        width: 100%;
+        padding: 0 20px;
+        gap: 20px;
+    }
+    
+    .menu-container, .saved-parties-container {
+        max-width: 100%;
+        padding: 32px 24px;
+    }
+    
     .menu-header {
         flex-direction: column;
         gap: 16px;
         align-items: center;
+        margin-bottom: 24px;
     }
     
     .menu-header h2 {
         text-align: center;
+    }
+    
+    .main-actions button {
+        padding: 18px 20px;
+        font-size: 14px;
+    }
+}
+
+/* Fix settings dropdown positioning on mobile */
+@media (max-width: 600px) {
+    .settings-content {
+        right: -50px;
+        min-width: 200px;
     }
 }

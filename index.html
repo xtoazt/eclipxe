@@ -70,39 +70,38 @@
   </div>  
 
   <div id="menu" class="menu-layout">
-    <div class="menu-header">
-      <h2><span id="menuDisplayName"></span></h2>
-      <div class="settings-dropdown">
-        <button class="settings-btn" id="settingsBtn"><i class="fas fa-cog"></i></button>
-        <div class="settings-content">
-          <div class="settings-item">
-            <span>notifications</span>
-            <button id="notificationsToggle" class="toggle-btn">
-              <i class="fas fa-bell"></i>
-            </button>
-          </div>
-          <div class="settings-item">
-            <span>light mode</span>
-            <button id="themeToggleSettings" class="toggle-btn">
-              <i class="fas fa-sun"></i>
-            </button>
+    <div class="menu-container">
+      <div class="menu-header">
+        <h2><span id="menuDisplayName"></span></h2>
+        <div class="settings-dropdown" id="settingsDropdown">
+          <button class="settings-btn" id="settingsBtn"><i class="fas fa-cog"></i></button>
+          <div class="settings-content" id="settingsContent">
+            <div class="settings-item">
+              <span>notifications</span>
+              <button id="notificationsToggle" class="toggle-btn">
+                <i class="fas fa-bell"></i>
+              </button>
+            </div>
+            <div class="settings-item">
+              <span>light mode</span>
+              <button id="themeToggleSettings" class="toggle-btn">
+                <i class="fas fa-sun"></i>
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    
-    <div class="menu-islands">
-      <div class="menu-island">
-        <h3>actions</h3>
+      
+      <div class="main-actions">
         <button id="globalChatBtn">global chat</button>
         <button id="createPartyBtn">create party</button>
         <button id="joinPartyBtn">join party</button>
       </div>
-      
-      <div class="menu-island">
-        <h3>saved parties</h3>
-        <div id="menuSavedPartiesList"></div>
-      </div>
+    </div>
+    
+    <div class="saved-parties-container">
+      <h3>saved parties</h3>
+      <div id="menuSavedPartiesList"></div>
     </div>
   </div>
 
