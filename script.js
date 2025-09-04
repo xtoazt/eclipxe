@@ -214,6 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const deletePartyBtn = document.getElementById('deletePartyBtn');
   const savePartyBtn = document.getElementById('savePartyBtn');
   const notificationsToggle = document.getElementById('notificationsToggle');
+  const themeToggle = document.getElementById('themeToggle');
   const menuSavedPartiesList = document.getElementById('menuSavedPartiesList');
   const savePartyModal = document.getElementById('savePartyModal');
   const partyNameInput = document.getElementById('partyNameInput');
@@ -543,6 +544,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
   notificationsToggle.addEventListener('click', toggleNotifications);
 
+  // Theme management
+  function initializeTheme() {
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateThemeIcon(savedTheme);
+  }
+
+  function updateThemeIcon(theme) {
+    const icon = themeToggle.querySelector('i');
+    icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+  }
+
+  function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    updateThemeIcon(newTheme);
+  }
+
+  themeToggle.addEventListener('click', toggleTheme);
+
 
   // Save party functionality
   savePartyBtn.addEventListener('click', () => {
@@ -667,7 +690,8 @@ document.addEventListener('DOMContentLoaded', () => {
     console.error('deletePartyBtn not found');
   }
 
-  // Initialize notifications, online counter, and particles after all elements are defined
+  // Initialize theme, notifications, online counter, and particles after all elements are defined
+  initializeTheme();
   initializeNotifications();
   initializeOnlineCounter();
   
