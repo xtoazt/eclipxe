@@ -6,25 +6,24 @@
 
 :root {
   --bg-primary: #0a0a0a;
-  --bg-secondary: #1a1a1a;
-  --bg-tertiary: #242424;
+  --bg-secondary: #141414;
+  --bg-tertiary: #1a1a1a;
   --bg-card: #1e1e1e;
   --text-primary: #ffffff;
-  --text-secondary: #b0b0b0;
-  --text-tertiary: #808080;
-  --border-color: rgba(255, 255, 255, 0.1);
-  --accent: #ffffff;
-  --accent-hover: #e0e0e0;
-  --accent-light: rgba(255, 255, 255, 0.15);
+  --text-secondary: #a0a0a0;
+  --text-tertiary: #6b6b6b;
+  --border-color: rgba(255, 255, 255, 0.08);
+  --accent: #d0d0d0;
+  --accent-hover: #e8e8e8;
+  --accent-light: rgba(208, 208, 208, 0.15);
+  --accent-dark: #888888;
   --success: #00d4aa;
   --danger: #ff4444;
-  --orange: #ff6b35;
-  --green: #00d4aa;
-  --radius: 20px;
-  --radius-sm: 12px;
-  --radius-lg: 24px;
-  --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.6);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --radius-lg: 20px;
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
@@ -43,14 +42,16 @@ body {
   margin: 0;
 }
 
-/* Dashboard Layout */
+/* Minimal Professional Layout */
 .dashboard-layout {
   width: 100%;
   min-height: 100vh;
-  padding: 24px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .dashboard-header {
@@ -59,9 +60,8 @@ body {
   align-items: center;
   padding: 16px 24px;
   background: var(--bg-card);
-  border-radius: var(--radius);
   border: 1px solid var(--border-color);
-  box-shadow: var(--shadow);
+  border-radius: var(--radius);
   margin-bottom: 0;
 }
 
@@ -72,13 +72,13 @@ body {
 }
 
 .header-btn {
-  padding: 10px 20px;
+  padding: 10px 18px;
   background: var(--bg-tertiary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
   color: var(--text-primary);
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
@@ -89,34 +89,32 @@ body {
 .header-btn:hover {
   background: var(--bg-secondary);
   border-color: var(--accent);
-  transform: translateY(-2px);
+  color: var(--accent);
 }
 
 .profile-btn {
-  background: var(--accent-light);
+  background: transparent;
   border-color: var(--accent);
   color: var(--accent);
 }
 
 .admin-btn {
-  background: rgba(255, 255, 255, 0.15);
+  background: transparent;
   border-color: var(--accent);
   color: var(--accent);
 }
 
 .app-title {
-  font-size: 32px;
-  font-weight: 800;
-  background: linear-gradient(135deg, var(--accent), var(--text-secondary));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
 }
 
 .dashboard-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  gap: 24px;
+  gap: 20px;
   flex: 1;
 }
 
@@ -128,50 +126,47 @@ body {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius);
-  padding: 32px;
-  box-shadow: var(--shadow);
-  transition: all 0.3s ease;
+  padding: 28px;
+  transition: all 0.2s ease;
   display: flex;
   flex-direction: column;
 }
 
 .dashboard-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
-  border-color: rgba(255, 255, 255, 0.15);
+  border-color: var(--accent);
 }
 
 .welcome-card {
   grid-column: 1 / -1;
-  background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-tertiary) 100%);
 }
 
 .welcome-card h2 {
-  font-size: 36px;
+  font-size: 32px;
   font-weight: 700;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
   letter-spacing: -0.02em;
+  color: var(--text-primary);
 }
 
 .party-code-badge {
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 20px;
-  background: var(--accent-light);
-  border: 1px solid var(--accent);
+  padding: 10px 18px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
   margin-top: 8px;
 }
 
 .badge-label {
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text-secondary);
   font-weight: 500;
 }
 
 .badge-value {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--accent);
   font-family: 'Monaco', 'Courier New', monospace;
@@ -180,24 +175,25 @@ body {
 .messages-card {
   grid-column: 1 / -1;
   min-height: 600px;
-  max-height: calc(100vh - 300px);
+  max-height: calc(100vh - 280px);
 }
 
 .card-header {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
   padding-bottom: 16px;
   border-bottom: 1px solid var(--border-color);
 }
 
 .card-header h3 {
-  font-size: 20px;
-  font-weight: 700;
+  font-size: 18px;
+  font-weight: 600;
   display: flex;
   align-items: center;
   gap: 10px;
+  color: var(--text-primary);
 }
 
 #messages {
@@ -208,11 +204,11 @@ body {
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-color);
   min-height: 500px;
-  max-height: calc(100vh - 450px);
+  max-height: calc(100vh - 420px);
 }
 
 #messages::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 #messages::-webkit-scrollbar-track {
@@ -221,16 +217,16 @@ body {
 
 #messages::-webkit-scrollbar-thumb {
   background: var(--bg-tertiary);
-  border-radius: 4px;
+  border-radius: 3px;
 }
 
 #messages::-webkit-scrollbar-thumb:hover {
-  background: var(--accent);
+  background: var(--accent-dark);
 }
 
 .message {
-  padding: 16px 20px;
-  margin-bottom: 16px;
+  padding: 14px 18px;
+  margin-bottom: 12px;
   border-radius: var(--radius-sm);
   background: var(--bg-tertiary);
   border: 1px solid var(--border-color);
@@ -241,13 +237,13 @@ body {
 .message:hover {
   background: var(--bg-secondary);
   border-color: var(--accent);
-  transform: translateX(4px);
 }
 
 .message-username {
-  font-weight: 700;
+  font-weight: 600;
   margin-right: 8px;
-  font-size: 16px;
+  font-size: 15px;
+  color: var(--text-primary);
 }
 
 .admin-name {
@@ -262,7 +258,7 @@ body {
   left: -20%;
   right: -20%;
   bottom: 0;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
   animation: shine 4s infinite;
   pointer-events: none;
 }
@@ -338,18 +334,18 @@ body {
   font-size: 10px;
   color: var(--accent);
   margin-left: 8px;
-  font-weight: 700;
+  font-weight: 600;
   text-transform: uppercase;
 }
 
 #messageInput, #dmInput {
   flex: 1;
-  padding: 16px 20px;
+  padding: 14px 18px;
   background: var(--bg-tertiary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
   color: var(--text-primary);
-  font-size: 16px;
+  font-size: 15px;
   font-family: inherit;
   transition: all 0.2s ease;
 }
@@ -358,44 +354,42 @@ body {
   outline: none;
   border-color: var(--accent);
   background: var(--bg-secondary);
-  box-shadow: 0 0 0 3px var(--accent-light);
 }
 
 .send-button {
-  background: linear-gradient(135deg, var(--accent), var(--accent-hover));
-  color: white;
-  border: none;
-  padding: 16px 32px;
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  padding: 14px 24px;
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition: all 0.2s ease;
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 500;
   min-width: 60px;
-  box-shadow: 0 4px 16px rgba(255, 255, 255, 0.2);
 }
 
 .send-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 24px rgba(255, 255, 255, 0.25);
+  background: var(--bg-secondary);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .leave-button {
   width: 100%;
-  padding: 14px 24px;
+  padding: 12px 20px;
   background: rgba(255, 68, 68, 0.1);
   border: 1px solid var(--danger);
   border-radius: var(--radius-sm);
   color: var(--danger);
-  font-size: 15px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .leave-button:hover {
   background: rgba(255, 68, 68, 0.2);
-  transform: translateY(-2px);
 }
 
 /* Auth Pages */
@@ -404,31 +398,31 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  padding: 24px;
+  padding: 20px;
 }
 
 .auth-card {
   width: 100%;
-  max-width: 480px;
+  max-width: 420px;
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
-  padding: 48px;
-  box-shadow: var(--shadow-lg);
+  padding: 40px;
 }
 
 .auth-card h2 {
-  font-size: 36px;
+  font-size: 32px;
   font-weight: 700;
-  margin-bottom: 32px;
+  margin-bottom: 28px;
   text-align: center;
   letter-spacing: -0.02em;
+  color: var(--text-primary);
 }
 
 .auth-form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 18px;
 }
 
 .input-group {
@@ -439,20 +433,20 @@ body {
 
 .input-icon {
   position: absolute;
-  left: 20px;
+  left: 18px;
   color: var(--text-secondary);
-  font-size: 18px;
+  font-size: 16px;
   z-index: 1;
 }
 
 .input-group input {
   width: 100%;
-  padding: 16px 20px 16px 52px;
+  padding: 14px 18px 14px 48px;
   background: var(--bg-tertiary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
   color: var(--text-primary);
-  font-size: 16px;
+  font-size: 15px;
   font-family: inherit;
   transition: all 0.2s ease;
 }
@@ -461,15 +455,18 @@ body {
   outline: none;
   border-color: var(--accent);
   background: var(--bg-secondary);
-  box-shadow: 0 0 0 3px var(--accent-light);
+}
+
+.input-group input::placeholder {
+  color: var(--text-tertiary);
 }
 
 .password-container .toggle-password {
   position: absolute;
-  right: 20px;
+  right: 18px;
   cursor: pointer;
   color: var(--text-secondary);
-  font-size: 18px;
+  font-size: 16px;
   z-index: 1;
 }
 
@@ -479,35 +476,35 @@ body {
 
 .auth-button {
   width: 100%;
-  padding: 16px 24px;
-  background: linear-gradient(135deg, var(--accent), var(--accent-hover));
-  color: white;
-  border: none;
+  padding: 14px 20px;
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 16px rgba(255, 255, 255, 0.2);
   margin-top: 8px;
 }
 
 .auth-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 24px rgba(255, 255, 255, 0.25);
+  background: var(--bg-secondary);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .link {
   text-align: center;
   margin-top: 8px;
   color: var(--text-secondary);
-  font-size: 15px;
+  font-size: 14px;
 }
 
 .link span {
   color: var(--accent);
   cursor: pointer;
-  font-weight: 600;
+  font-weight: 500;
   transition: color 0.2s ease;
 }
 
@@ -523,28 +520,28 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text-secondary);
-  margin-bottom: 12px;
-  font-weight: 600;
+  margin-bottom: 10px;
+  font-weight: 500;
 }
 
 .admin-hint {
   display: block;
   color: var(--text-tertiary);
   font-size: 12px;
-  margin-top: 8px;
+  margin-top: 6px;
 }
 
 /* Menu Page */
 .subtitle {
-  font-size: 16px;
+  font-size: 15px;
   color: var(--text-secondary);
   margin-top: 8px;
 }
 
 .highlight {
-  font-weight: 700;
+  font-weight: 600;
   color: var(--accent);
 }
 
@@ -556,17 +553,17 @@ body {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 16px;
-  margin-top: 24px;
+  margin-top: 20px;
 }
 
 .action-btn {
-  padding: 24px;
+  padding: 20px;
   background: var(--bg-tertiary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
   color: var(--text-primary);
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
@@ -577,24 +574,22 @@ body {
 }
 
 .action-btn i {
-  font-size: 32px;
+  font-size: 28px;
   color: var(--accent);
 }
 
 .action-btn.primary {
-  background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+  background: var(--bg-secondary);
   border-color: var(--accent);
-  color: white;
 }
 
 .action-btn.primary i {
-  color: white;
+  color: var(--accent);
 }
 
 .action-btn:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow);
   border-color: var(--accent);
+  background: var(--bg-secondary);
 }
 
 .saved-parties-card {
@@ -604,12 +599,12 @@ body {
 .saved-parties-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 16px;
+  gap: 14px;
   margin-top: 16px;
 }
 
 .saved-party-item {
-  padding: 20px;
+  padding: 18px;
   background: var(--bg-tertiary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
@@ -620,14 +615,13 @@ body {
 }
 
 .saved-party-item:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow);
   border-color: var(--accent);
+  background: var(--bg-secondary);
 }
 
 .saved-party-item span {
-  font-weight: 700;
-  font-size: 18px;
+  font-weight: 600;
+  font-size: 16px;
   font-family: 'Monaco', 'Courier New', monospace;
   color: var(--accent);
 }
@@ -639,13 +633,13 @@ body {
 
 .saved-party-item button {
   flex: 1;
-  padding: 8px 16px;
-  font-size: 13px;
+  padding: 8px 14px;
+  font-size: 12px;
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
   color: var(--text-primary);
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -657,7 +651,7 @@ body {
 }
 
 .saved-party-item button:hover {
-  transform: translateY(-2px);
+  background: var(--bg-tertiary);
 }
 
 /* Dropdown */
@@ -671,7 +665,7 @@ body {
   right: 0;
   top: calc(100% + 8px);
   background: var(--bg-card);
-  min-width: 200px;
+  min-width: 180px;
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
   box-shadow: var(--shadow-lg);
@@ -693,7 +687,7 @@ body {
   cursor: pointer;
   transition: background 0.15s ease;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -712,18 +706,18 @@ body {
   top: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
 }
 
 .modal-content {
   background: var(--bg-card);
   margin: 5% auto;
-  padding: 40px;
+  padding: 36px;
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   width: 90%;
-  max-width: 700px;
+  max-width: 650px;
   max-height: 90vh;
   overflow-y: auto;
   position: relative;
@@ -731,28 +725,29 @@ body {
 }
 
 .modal-content h3 {
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 700;
   margin-bottom: 24px;
   letter-spacing: -0.02em;
   display: flex;
   align-items: center;
   gap: 12px;
+  color: var(--text-primary);
 }
 
 .close {
   color: var(--text-secondary);
   float: right;
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 300;
   cursor: pointer;
   position: absolute;
-  right: 24px;
-  top: 24px;
+  right: 20px;
+  top: 20px;
   line-height: 1;
   transition: all 0.2s ease;
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -765,50 +760,53 @@ body {
 }
 
 .profile-section {
-  margin: 32px 0;
-  padding: 24px;
+  margin: 28px 0;
+  padding: 20px;
   background: var(--bg-tertiary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
 }
 
 .profile-section h4 {
-  font-size: 18px;
-  font-weight: 700;
+  font-size: 17px;
+  font-weight: 600;
   margin-bottom: 8px;
+  color: var(--text-primary);
 }
 
 .profile-description {
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text-secondary);
-  margin-bottom: 20px;
+  margin-bottom: 18px;
   line-height: 1.6;
 }
 
 .account-info {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 .info-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px;
+  padding: 14px;
   background: var(--bg-secondary);
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-color);
 }
 
 .info-label {
-  font-weight: 600;
+  font-weight: 500;
   color: var(--text-secondary);
+  font-size: 14px;
 }
 
 .info-value {
-  font-weight: 700;
+  font-weight: 600;
   color: var(--text-primary);
+  font-size: 14px;
 }
 
 .danger-section {
@@ -818,13 +816,13 @@ body {
 
 .danger-btn {
   width: 100%;
-  padding: 16px 24px;
+  padding: 14px 20px;
   background: rgba(255, 68, 68, 0.1);
   border: 1px solid var(--danger);
   border-radius: var(--radius-sm);
   color: var(--danger);
-  font-size: 16px;
-  font-weight: 700;
+  font-size: 15px;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
@@ -835,7 +833,6 @@ body {
 
 .danger-btn:hover {
   background: rgba(255, 68, 68, 0.2);
-  transform: translateY(-2px);
 }
 
 /* Friends, DMs, Admin Panel */
@@ -850,8 +847,8 @@ body {
 }
 
 .friend-item, .party-member-item, .dm-user-item {
-  padding: 16px;
-  margin: 8px 0;
+  padding: 14px;
+  margin: 6px 0;
   background: var(--bg-tertiary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
@@ -864,36 +861,47 @@ body {
 .friend-item:hover, .party-member-item:hover, .dm-user-item:hover {
   background: var(--bg-secondary);
   border-color: var(--accent);
-  transform: translateX(4px);
 }
 
 .friend-item button, .party-member-item button {
-  padding: 8px 16px;
-  font-size: 13px;
+  padding: 6px 14px;
+  font-size: 12px;
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
   color: var(--text-primary);
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.friend-item button:hover, .party-member-item button:hover {
+  background: var(--bg-tertiary);
+  border-color: var(--accent);
 }
 
 #friendSearchInput {
   width: 100%;
   margin-bottom: 16px;
-  padding: 14px 20px;
+  padding: 12px 18px;
   background: var(--bg-tertiary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
   color: var(--text-primary);
-  font-size: 15px;
+  font-size: 14px;
+}
+
+#friendSearchInput:focus {
+  border-color: var(--accent);
+  background: var(--bg-secondary);
+  outline: none;
 }
 
 #dmMessages {
   height: 400px;
   overflow-y: auto;
   margin: 16px 0;
-  padding: 16px;
+  padding: 14px;
   background: var(--bg-primary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
@@ -905,63 +913,64 @@ body {
 }
 
 .admin-section {
-  margin: 24px 0;
-  padding: 24px;
+  margin: 20px 0;
+  padding: 20px;
   background: var(--bg-tertiary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
 }
 
 .admin-section h4 {
-  font-size: 18px;
-  font-weight: 700;
-  margin-bottom: 16px;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 14px;
+  color: var(--text-primary);
 }
 
 .admin-section input, .admin-section button {
   width: 100%;
   margin: 8px 0;
-  padding: 14px 20px;
+  padding: 12px 18px;
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
   color: var(--text-primary);
-  font-size: 15px;
+  font-size: 14px;
 }
 
 .admin-section button {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: white;
-  font-weight: 600;
+  background: var(--bg-tertiary);
+  border-color: var(--border-color);
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .admin-section button:hover {
-  background: var(--accent-hover);
-  transform: translateY(-2px);
+  background: var(--bg-secondary);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 #generatedCodeDisplay {
-  margin-top: 16px;
-  padding: 16px;
+  margin-top: 14px;
+  padding: 14px;
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
   font-family: 'Monaco', 'Courier New', monospace;
-  font-size: 14px;
+  font-size: 13px;
   color: var(--success);
   text-align: center;
   word-break: break-all;
 }
 
 .code-request-item {
-  padding: 16px;
-  margin: 12px 0;
+  padding: 14px;
+  margin: 10px 0;
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
-  border-left: 4px solid var(--accent);
+  border-left: 3px solid var(--accent);
   border-radius: var(--radius-sm);
   display: flex;
   justify-content: space-between;
@@ -971,24 +980,24 @@ body {
 /* Toast */
 #toast-container {
   position: fixed;
-  top: 24px;
-  right: 24px;
+  top: 20px;
+  right: 20px;
   z-index: 3000;
 }
 
 .toast {
   background: var(--bg-card);
   color: var(--text-primary);
-  padding: 16px 24px;
-  margin-bottom: 12px;
+  padding: 14px 20px;
+  margin-bottom: 10px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-color);
   box-shadow: var(--shadow-lg);
   opacity: 0;
   transition: opacity 0.3s ease;
-  font-size: 15px;
-  font-weight: 500;
-  min-width: 300px;
+  font-size: 14px;
+  font-weight: 400;
+  min-width: 280px;
 }
 
 .toast.show {
@@ -1001,52 +1010,53 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  padding: 24px;
+  padding: 20px;
 }
 
 #createParty .dashboard-card, #joinParty .dashboard-card {
-  max-width: 600px;
+  max-width: 500px;
   width: 100%;
 }
 
 #createParty h2, #joinParty h2 {
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 700;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
   text-align: center;
+  color: var(--text-primary);
 }
 
 #partyCode {
   font-family: 'Monaco', 'Courier New', monospace;
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 700;
   color: var(--accent);
   display: block;
   text-align: center;
-  padding: 20px;
+  padding: 18px;
   background: var(--bg-tertiary);
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-color);
-  margin-top: 16px;
+  margin-top: 14px;
 }
 
 /* Admin visual distinction */
 .admin-account {
-  border-left: 4px solid var(--accent) !important;
+  border-left: 3px solid var(--accent) !important;
 }
 
 .message .mention {
   background: var(--accent-light);
   color: var(--accent);
-  padding: 3px 8px;
-  border-radius: 6px;
-  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 5px;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .message .mention:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(208, 208, 208, 0.25);
 }
 
 /* Container base */
