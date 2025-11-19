@@ -7,6 +7,7 @@
   <link rel="icon" type="image/png" href="favicon.png">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@4/dist/fp.min.js"></script>
   <script type="module" src="script.js"></script>
 </head>
 <body>
@@ -18,7 +19,8 @@
       <span class="toggle-password" id="toggleSignupPassword">
         <i class="fas fa-eye"></i>
       </span>
-    </div>      
+    </div>
+    <input type="text" id="signupAdminCode" placeholder="Admin Code (Optional)" />
     <button id="signupBtn">Signup</button>
     <div class="link" id="toLogin">Already have an account? Login</div>
   </div>
@@ -39,11 +41,17 @@
   <div id="chat" class="container">
     <div id="top-left-buttons">
       <button id="deletePartyBtn" style="display: none;"><i class="fas fa-trash-alt"></i> Delete Party</button>
+      <button id="friendsBtn"><i class="fas fa-user-friends"></i> Friends</button>
+      <button id="dmsBtn"><i class="fas fa-envelope"></i> DMs</button>
     </div>
     <div id="top-right-buttons">
       <div class="dropdown">
         <button class="dropbtn"><i class="fas fa-cog"></i></button>
         <div class="dropdown-content">
+          <button id="changeDisplayNameBtn"><i class="fas fa-edit"></i> Change Display Name</button>
+          <button id="changeColorBtn"><i class="fas fa-palette"></i> Change Name Color</button>
+          <button id="requestColorCodeBtn"><i class="fas fa-key"></i> Request Color Code</button>
+          <button id="adminPanelBtn" style="display: none;"><i class="fas fa-shield-alt"></i> Admin Panel</button>
           <button id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
           <button id="deleteAccountBtn"><i class="fas fa-trash-alt"></i> Delete Account</button>
         </div>
@@ -66,15 +74,18 @@
   </div>  
 
   <div id="menu" class="container">
-<h2>Welcome, <span id="menuDisplayName"></span>.</h2>
-<p style="font-size: 1.2em; color: white; text-align: center; margin-top: -10px; margin-bottom: 10px;">
-  - chat by <span style="font-weight: bold; text-shadow: 0 0 5px #fff;">rohan</span> and 
-  <span style="font-weight: bold; text-shadow: 0 0 5px #fff;">ivan</span> -</span>
-</p>
-<button id="globalChatBtn">Enter Schoolwide Chat</button>
-<button id="createPartyBtn">Create Party</button>
-<button id="joinPartyBtn">Join Party</button>
-
+    <h2>Welcome, <span id="menuDisplayName"></span>.</h2>
+    <p style="font-size: 1.2em; color: white; text-align: center; margin-top: -10px; margin-bottom: 10px;">
+      - chat by <span style="font-weight: bold; text-shadow: 0 0 5px #fff;">rohan</span> and 
+      <span style="font-weight: bold; text-shadow: 0 0 5px #fff;">ivan</span> -
+    </p>
+    <button id="globalChatBtn">Enter Schoolwide Chat</button>
+    <button id="createPartyBtn">Create Party</button>
+    <button id="joinPartyBtn">Join Party</button>
+    <div id="savedPartiesContainer">
+      <h3>Saved Parties</h3>
+      <div id="savedPartiesList"></div>
+    </div>
   </div>
 
   <div id="createParty" class="container">
@@ -88,6 +99,71 @@
     <input type="text" id="joinPartyCode" placeholder="Enter Party Code" required />
     <button id="joinPartySubmitBtn">Join Party</button>
     <button id="backToMenuFromJoin">Back to Menu</button>
+  </div>
+
+  <!-- Modals -->
+  <div id="changeDisplayNameModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h3>Change Display Name</h3>
+      <input type="text" id="newDisplayNameInput" placeholder="Enter new display name" />
+      <button id="saveDisplayNameBtn">Save</button>
+    </div>
+  </div>
+
+  <div id="changeColorModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h3>Change Name Color</h3>
+      <input type="text" id="colorCodeInput" placeholder="Enter color code" />
+      <button id="saveColorBtn">Save</button>
+    </div>
+  </div>
+
+  <div id="friendsModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h3>Friends</h3>
+      <div id="friendsList"></div>
+      <div id="partyMembersList"></div>
+    </div>
+  </div>
+
+  <div id="dmsModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h3>Direct Messages</h3>
+      <div id="dmUsersList"></div>
+      <div id="dmMessages"></div>
+      <div class="message-input-container">
+        <input type="text" id="dmInput" placeholder="Type a message" />
+        <button id="sendDmBtn"><i class="fas fa-paper-plane"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <div id="adminPanelModal" class="modal">
+    <div class="modal-content admin-panel">
+      <span class="close">&times;</span>
+      <h3>Admin Panel</h3>
+      <div class="admin-section">
+        <h4>Generate Color Code</h4>
+        <input type="number" id="codeExpiryHours" placeholder="Hours (default: 24)" value="24" />
+        <button id="generateCodeBtn">Generate Code</button>
+        <div id="generatedCodeDisplay"></div>
+      </div>
+      <div class="admin-section">
+        <h4>User Management</h4>
+        <input type="text" id="banUsernameInput" placeholder="Username to ban" />
+        <button id="banUserBtn">Ban User</button>
+        <input type="text" id="banFingerprintInput" placeholder="Fingerprint ID to ban" />
+        <button id="banFingerprintBtn">Ban Device</button>
+      </div>
+      <div class="admin-section">
+        <h4>Code Requests</h4>
+        <div id="codeRequestsList"></div>
+      </div>
+    </div>
   </div>
 
   <div id="toast-container"></div>
