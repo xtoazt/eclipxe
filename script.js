@@ -116,6 +116,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const banUserBtn = document.getElementById('banUserBtn');
   const banFingerprintInput = document.getElementById('banFingerprintInput');
   const banFingerprintBtn = document.getElementById('banFingerprintBtn');
+  const banIPInput = document.getElementById('banIPInput');
+  const banIPBtn = document.getElementById('banIPBtn');
   const codeRequestsList = document.getElementById('codeRequestsList');
   const savedPartiesList = document.getElementById('savedPartiesList');
 
@@ -167,9 +169,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  async function getIPAddress() {
+    try {
+      const response = await fetch('https://api.ipify.org?format=json');
+      const data = await response.json();
+      return data.ip;
+    } catch (error) {
+      console.error('Error fetching IP:', error);
+      return 'unknown';
+    }
+  }
+
   function checkBanned() {
     const currentUser = JSON.parse(localStorage.getItem('user'));
-    if (!currentUser || !fingerprintId) return;
+    if (!currentUser) return;
 
     get(ref(db, `banned/users/${currentUser.username}`))
       .then(snapshot => {
@@ -180,81 +193,104 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
 
-    get(ref(db, `banned/fingerprints/${fingerprintId}`))
-      .then(snapshot => {
-        if (snapshot.exists()) {
-          showToast('This device has been banned.');
-          localStorage.removeItem('user');
-          window.location.reload();
-        }
-      });
+    if (fingerprintId) {
+      get(ref(db, `banned/fingerprints/${fingerprintId}`))
+        .then(snapshot => {
+          if (snapshot.exists()) {
+            showToast('This device has been banned.');
+            localStorage.removeItem('user');
+            window.location.reload();
+          }
+        });
+    }
+
+    getIPAddress().then(ip => {
+      get(ref(db, `banned/ips/${ip}`))
+        .then(snapshot => {
+          if (snapshot.exists()) {
+            showToast('Your IP address has been banned.');
+            localStorage.removeItem('user');
+            window.location.reload();
+          }
+        });
+    });
   }
 
-  signupBtn.addEventListener('click', () => {
+  signupBtn.addEventListener('click', async () => {
     const username = signupUsername.value.trim();
     const password = signupPassword.value;
     const adminCode = signupAdminCode.value.trim();
     const isAdmin = adminCode === '123asd';
 
     if (username && password) {
-      const userRef = ref(db, `users/${username}`);
-      get(userRef)
-        .then(snapshot => {
-          if (snapshot.exists()) {
-            showToast('An account with this username already exists.');
-          } else {
-            const userData = {
-              password,
-              isAdmin: isAdmin || false,
-              displayName: username,
-              displayNameColor: '#e0e0e0',
-              fingerprintId: fingerprintId || 'unknown',
-              friends: {},
-              savedParties: []
-            };
-            set(userRef, userData)
-              .then(() => {
-                showToast('Signup successful! Please login.');
-                signupDiv.style.display = 'none';
-                loginDiv.style.display = 'block';
-              })
-              .catch(err => showToast('Error during signup: ' + err));
-          }
-        })
-        .catch(err => showToast('Error checking username: ' + err));
+      try {
+        const userRef = ref(db, `users/${username}`);
+        const snapshot = await get(userRef);
+        
+        if (snapshot.exists()) {
+          showToast('An account with this username already exists.');
+        } else {
+          const ipAddress = await getIPAddress();
+          const userData = {
+            password,
+            isAdmin: isAdmin || false,
+            displayName: username,
+            displayNameColor: '#ffffff',
+            fingerprintId: fingerprintId || 'unknown',
+            ipAddress: ipAddress,
+            friends: {},
+            savedParties: []
+          };
+          await set(userRef, userData);
+          showToast('Signup successful! Please login.');
+          signupDiv.style.display = 'none';
+          loginDiv.style.display = 'block';
+        }
+      } catch (err) {
+        showToast('Error during signup: ' + err);
+      }
     } else {
       showToast('Please enter both username and password.');
     }
   });
 
-  loginBtn.addEventListener('click', () => {
+  loginBtn.addEventListener('click', async () => {
     const username = loginUsername.value.trim();
     const password = loginPassword.value;
 
     if (username && password) {
-      checkBanned();
-      const userRef = ref(db, `users/${username}`);
-      get(userRef)
-        .then(snapshot => {
-          if (snapshot.exists() && snapshot.val().password === password) {
-            const userData = snapshot.val();
-            localStorage.setItem('user', JSON.stringify({ 
-              username,
-              isAdmin: userData.isAdmin || false,
-              displayName: userData.displayName || username,
-              displayNameColor: userData.displayNameColor || '#e0e0e0'
-            }));
-            set(ref(db, `online/${username}`), true);
-            update(ref(db, `users/${username}`), { fingerprintId: fingerprintId || 'unknown' });
-            showMenu();
-            showToast('Login successful.');
-            setupNotificationCheck();
-            loadSavedParties();
-          } else {
-            showToast('Invalid username or password.');
-          }
-        })
-        .catch(err => showToast('Error during login: ' + err));
+      try {
+        await checkBanned();
+        const userRef = ref(db, `users/${username}`);
+        const snapshot = await get(userRef);
+        
+        if (snapshot.exists() && snapshot.val().password === password) {
+          const userData = snapshot.val();
+          const ipAddress = await getIPAddress();
+          
+          localStorage.setItem('user', JSON.stringify({ 
+            username,
+            isAdmin: userData.isAdmin || false,
+            displayName: userData.displayName || username,
+            displayNameColor: userData.displayNameColor || '#ffffff'
+          }));
+          
+          await set(ref(db, `online/${username}`), true);
+          await update(ref(db, `users/${username}`), { 
+            fingerprintId: fingerprintId || 'unknown',
+            ipAddress: ipAddress
+          });
+          
+          showMenu();
+          showToast('Login successful.');
+          setupNotificationCheck();
+          loadSavedParties();
+        } else {
+          showToast('Invalid username or password.');
+        }
+      } catch (err) {
+        showToast('Error during login: ' + err);
+      }
     }
   });
 
@@ -1226,7 +1262,58 @@ document.addEventListener('DOMContentLoaded', () => {
   adminPanelBtn.addEventListener('click', () => {
     adminPanelModal.style.display = 'block';
     loadCodeRequests();
+    loadAllUsers();
   });
+  
+  function loadAllUsers() {
+    const usersList = document.getElementById('usersList');
+    if (!usersList) return;
+    
+    get(ref(db, 'users'))
+      .then(snapshot => {
+        usersList.innerHTML = '';
+        const users = snapshot.exists() ? snapshot.val() : {};
+        
+        if (Object.keys(users).length === 0) {
+          usersList.innerHTML = '<p style="color: #6b6b6b; text-align: center; padding: 20px;">No users found</p>';
+          return;
+        }
+        
+        Object.entries(users).forEach(([username, userData]) => {
+          const item = document.createElement('div');
+          item.className = 'user-item';
+          item.innerHTML = `
+            <div class="user-item-header">
+              <span class="user-item-username">${username}</span>
+              ${userData.isAdmin ? '<span class="user-item-admin">ADMIN</span>' : ''}
+            </div>
+            <div class="user-item-info">
+              <div class="user-info-item">
+                <span class="user-info-label">Display Name:</span>
+                <span class="user-info-value">${userData.displayName || username}</span>
+              </div>
+              <div class="user-info-item">
+                <span class="user-info-label">Fingerprint ID:</span>
+                <span class="user-info-value">${userData.fingerprintId || 'unknown'}</span>
+              </div>
+              <div class="user-info-item">
+                <span class="user-info-label">IP Address:</span>
+                <span class="user-info-value">${userData.ipAddress || 'unknown'}</span>
+              </div>
+              <div class="user-info-item">
+                <span class="user-info-label">Account Type:</span>
+                <span class="user-info-value">${userData.isAdmin ? 'Administrator' : 'Standard User'}</span>
+              </div>
+            </div>
+          `;
+          usersList.appendChild(item);
+        });
+      })
+      .catch(err => {
+        console.error('Error loading users:', err);
+        showToast('Error loading users.');
+      });
+  }
 
   generateCodeBtn.addEventListener('click', () => {
     const hours = parseInt(codeExpiryHours.value) || 24;
@@ -1303,6 +1390,17 @@ document.addEventListener('DOMContentLoaded', () => {
       banFingerprintInput.value = '';
     }
   });
+
+  if (banIPBtn && banIPInput) {
+    banIPBtn.addEventListener('click', () => {
+      const ipAddress = banIPInput.value.trim();
+      if (ipAddress) {
+        set(ref(db, `banned/ips/${ipAddress}`), true);
+        showToast(`IP Address ${ipAddress} has been banned.`);
+        banIPInput.value = '';
+      }
+    });
+  }
 
   // Initialize
   const currentUser = JSON.parse(localStorage.getItem('user'));

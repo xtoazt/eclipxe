@@ -63,28 +63,28 @@
     </div>
   </div>
 
-  <div id="chat" class="container dashboard-layout">
-    <div class="dashboard-header">
-      <div class="header-left">
-        <button id="deletePartyBtn" class="header-btn" style="display: none;"><i class="fas fa-trash-alt"></i> Delete Party</button>
-        <button id="friendsBtn" class="header-btn"><i class="fas fa-user-friends"></i> Friends</button>
-        <button id="dmsBtn" class="header-btn"><i class="fas fa-envelope"></i> DMs</button>
+  <div id="chat" class="container minimal-layout">
+    <nav class="top-nav">
+      <div class="nav-left">
+        <button id="deletePartyBtn" class="nav-btn" style="display: none;">Delete Party</button>
+        <button id="friendsBtn" class="nav-btn">Friends</button>
+        <button id="dmsBtn" class="nav-btn">DMs</button>
       </div>
-      <div class="header-right">
-        <button id="profileBtn" class="header-btn profile-btn"><i class="fas fa-user-circle"></i> Profile</button>
-        <button id="adminPanelBtn" class="header-btn admin-btn" style="display: none;"><i class="fas fa-shield-alt"></i> Admin</button>
+      <div class="nav-right">
+        <button id="profileBtn" class="nav-btn">Profile</button>
+        <button id="adminPanelBtn" class="nav-btn admin-btn" style="display: none;">Admin</button>
         <div class="dropdown">
-          <button class="header-btn dropbtn"><i class="fas fa-cog"></i></button>
+          <button class="nav-btn dropbtn"><i class="fas fa-cog"></i></button>
           <div class="dropdown-content">
-            <button id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
-            <button id="deleteAccountBtnDropdown"><i class="fas fa-trash-alt"></i> Delete Account</button>
+            <button id="logoutBtn">Logout</button>
+            <button id="deleteAccountBtnDropdown">Delete Account</button>
           </div>
         </div>
       </div>
-    </div>
+    </nav>
 
-    <div class="dashboard-grid">
-      <div class="dashboard-card welcome-card">
+    <main class="main-content chat-content">
+      <div class="chat-header">
         <h2>Welcome, <span id="displayName"></span></h2>
         <div id="partyCodeContainer" class="party-code-badge">
           <span class="badge-label">Party Code</span>
@@ -92,14 +92,11 @@
         </div>
       </div>
 
-      <div class="dashboard-card messages-card">
-        <div class="card-header">
-          <h3><i class="fas fa-comments"></i> Messages</h3>
-        </div>
+      <div class="messages-container">
         <div id="messages"></div>
       </div>
 
-      <div class="dashboard-card input-card">
+      <div class="input-container">
         <div class="message-input-container">
           <div class="mention-autocomplete" id="mentionAutocomplete" style="display: none;"></div>
           <input type="text" id="messageInput" placeholder="Type a message (use @ to mention)" />
@@ -107,59 +104,46 @@
             <i class="fas fa-paper-plane"></i>
           </button>
         </div>
-        <button id="leavePartyBtn" class="leave-button"><i class="fas fa-sign-out-alt"></i> Leave Party</button>
+        <button id="leavePartyBtn" class="leave-button">Leave Party</button>
       </div>
-    </div>
+    </main>
   </div>  
 
-  <div id="menu" class="container dashboard-layout">
-    <div class="dashboard-header">
-      <div class="header-left">
+  <div id="menu" class="container minimal-layout">
+    <nav class="top-nav">
+      <div class="nav-left">
         <h1 class="app-title">Eclipse</h1>
       </div>
-      <div class="header-right">
-        <button id="profileBtn" class="header-btn profile-btn"><i class="fas fa-user-circle"></i> Profile</button>
+      <div class="nav-right">
+        <button id="profileBtn" class="nav-btn">Profile</button>
+        <button id="adminPanelBtn" class="nav-btn admin-btn" style="display: none;">Admin</button>
         <div class="dropdown">
-          <button class="header-btn dropbtn"><i class="fas fa-cog"></i></button>
+          <button class="nav-btn dropbtn"><i class="fas fa-cog"></i></button>
           <div class="dropdown-content">
-            <button id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
-            <button id="deleteAccountBtnDropdown"><i class="fas fa-trash-alt"></i> Delete Account</button>
+            <button id="logoutBtn">Logout</button>
+            <button id="deleteAccountBtnDropdown">Delete Account</button>
           </div>
         </div>
       </div>
-    </div>
+    </nav>
 
-    <div class="dashboard-grid menu-grid">
-      <div class="dashboard-card welcome-card">
+    <main class="main-content">
+      <div class="welcome-section">
         <h2>Welcome back, <span id="menuDisplayName"></span></h2>
         <p class="subtitle">- chat by <span class="highlight">rohan</span> and <span class="highlight">ivan</span> -</p>
       </div>
 
-      <div class="dashboard-card action-card">
-        <h3><i class="fas fa-comments"></i> Quick Actions</h3>
-        <div class="action-buttons">
-          <button id="globalChatBtn" class="action-btn primary">
-            <i class="fas fa-globe"></i>
-            <span>Schoolwide Chat</span>
-          </button>
-          <button id="createPartyBtn" class="action-btn secondary">
-            <i class="fas fa-plus-circle"></i>
-            <span>Create Party</span>
-          </button>
-          <button id="joinPartyBtn" class="action-btn secondary">
-            <i class="fas fa-sign-in-alt"></i>
-            <span>Join Party</span>
-          </button>
-        </div>
+      <div class="actions-section">
+        <button id="globalChatBtn" class="main-btn">Schoolwide Chat</button>
+        <button id="createPartyBtn" class="main-btn">Create Party</button>
+        <button id="joinPartyBtn" class="main-btn">Join Party</button>
       </div>
 
-      <div class="dashboard-card saved-parties-card">
-        <div class="card-header">
-          <h3><i class="fas fa-bookmark"></i> Saved Parties</h3>
-        </div>
-        <div id="savedPartiesList" class="saved-parties-grid"></div>
+      <div class="saved-parties-section">
+        <h3>Saved Parties</h3>
+        <div id="savedPartiesList" class="saved-parties-list"></div>
       </div>
-    </div>
+    </main>
   </div>
 
   <div id="createParty" class="container">
@@ -260,11 +244,18 @@
         <div id="generatedCodeDisplay"></div>
       </div>
       <div class="admin-section">
+        <h4>All Users</h4>
+        <p class="profile-description">View all registered users with their information</p>
+        <div id="usersList" class="users-list"></div>
+      </div>
+      <div class="admin-section">
         <h4>User Management</h4>
         <input type="text" id="banUsernameInput" placeholder="Username to ban" />
         <button id="banUserBtn">Ban User</button>
         <input type="text" id="banFingerprintInput" placeholder="Fingerprint ID to ban" />
         <button id="banFingerprintBtn">Ban Device</button>
+        <input type="text" id="banIPInput" placeholder="IP Address to ban" />
+        <button id="banIPBtn">Ban IP Address</button>
       </div>
       <div class="admin-section">
         <h4>Code Requests</h4>
