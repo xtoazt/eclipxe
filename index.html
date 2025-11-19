@@ -20,7 +20,15 @@
         <i class="fas fa-eye"></i>
       </span>
     </div>
-    <input type="text" id="signupAdminCode" placeholder="Admin Code (Optional)" />
+    <div class="admin-code-section">
+      <label for="signupAdminCode" style="font-size: 14px; color: #a0a0a0; margin-bottom: 8px; display: block;">
+        <i class="fas fa-shield-alt"></i> Admin Code (Optional)
+      </label>
+      <input type="text" id="signupAdminCode" placeholder="Enter admin code to become an admin" />
+      <small style="display: block; color: #6b6b6b; font-size: 12px; margin-top: 4px;">
+        Only enter if you have been given an admin code
+      </small>
+    </div>
     <button id="signupBtn">Signup</button>
     <div class="link" id="toLogin">Already have an account? Login</div>
   </div>
@@ -45,13 +53,11 @@
       <button id="dmsBtn"><i class="fas fa-envelope"></i> DMs</button>
     </div>
     <div id="top-right-buttons">
+      <button id="profileBtn" class="profile-btn"><i class="fas fa-user-circle"></i> Profile</button>
+      <button id="adminPanelBtn" class="admin-btn" style="display: none;"><i class="fas fa-shield-alt"></i> Admin Dashboard</button>
       <div class="dropdown">
         <button class="dropbtn"><i class="fas fa-cog"></i></button>
         <div class="dropdown-content">
-          <button id="changeDisplayNameBtn"><i class="fas fa-edit"></i> Change Display Name</button>
-          <button id="changeColorBtn"><i class="fas fa-palette"></i> Change Name Color</button>
-          <button id="requestColorCodeBtn"><i class="fas fa-key"></i> Request Color Code</button>
-          <button id="adminPanelBtn" style="display: none;"><i class="fas fa-shield-alt"></i> Admin Panel</button>
           <button id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
           <button id="deleteAccountBtn"><i class="fas fa-trash-alt"></i> Delete Account</button>
         </div>
@@ -65,7 +71,8 @@
     <div id="messages"></div>
     
     <div class="message-input-container">
-      <input type="text" id="messageInput" placeholder="Type a message" />
+      <div class="mention-autocomplete" id="mentionAutocomplete" style="display: none;"></div>
+      <input type="text" id="messageInput" placeholder="Type a message (use @ to mention)" />
       <button id="sendBtn">
         <i class="fas fa-paper-plane"></i>
       </button>
@@ -102,21 +109,49 @@
   </div>
 
   <!-- Modals -->
-  <div id="changeDisplayNameModal" class="modal">
-    <div class="modal-content">
+  <div id="profileModal" class="modal">
+    <div class="modal-content profile-modal">
       <span class="close">&times;</span>
-      <h3>Change Display Name</h3>
-      <input type="text" id="newDisplayNameInput" placeholder="Enter new display name" />
-      <button id="saveDisplayNameBtn">Save</button>
-    </div>
-  </div>
+      <h3><i class="fas fa-user-circle"></i> Profile Settings</h3>
+      
+      <div class="profile-section">
+        <h4>Display Name</h4>
+        <p class="profile-description">Your display name is what others see in chat</p>
+        <input type="text" id="newDisplayNameInput" placeholder="Enter new display name" />
+        <button id="saveDisplayNameBtn">Update Display Name</button>
+      </div>
 
-  <div id="changeColorModal" class="modal">
-    <div class="modal-content">
-      <span class="close">&times;</span>
-      <h3>Change Name Color</h3>
-      <input type="text" id="colorCodeInput" placeholder="Enter color code" />
-      <button id="saveColorBtn">Save</button>
+      <div class="profile-section">
+        <h4>Name Color</h4>
+        <p class="profile-description">Change the color of your display name using a color code from an admin</p>
+        <input type="text" id="colorCodeInput" placeholder="Enter color code" />
+        <button id="saveColorBtn">Apply Color Code</button>
+        <button id="requestColorCodeBtn" style="margin-top: 8px; background: var(--bg-tertiary); border: 1px solid var(--border-color);">
+          <i class="fas fa-key"></i> Request Color Code from Admin
+        </button>
+      </div>
+
+      <div class="profile-section">
+        <h4>Account Information</h4>
+        <div class="account-info">
+          <div class="info-item">
+            <span class="info-label">Username:</span>
+            <span class="info-value" id="profileUsername"></span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Account Type:</span>
+            <span class="info-value" id="profileAccountType"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="profile-section danger-section">
+        <h4 style="color: var(--danger);"><i class="fas fa-exclamation-triangle"></i> Danger Zone</h4>
+        <p class="profile-description">Permanently delete your account. This action cannot be undone.</p>
+        <button id="deleteAccountBtn" class="danger-btn">
+          <i class="fas fa-trash-alt"></i> Delete Account
+        </button>
+      </div>
     </div>
   </div>
 
@@ -124,7 +159,9 @@
     <div class="modal-content">
       <span class="close">&times;</span>
       <h3>Friends</h3>
+      <input type="text" id="friendSearchInput" placeholder="Search friends..." />
       <div id="friendsList"></div>
+      <h4 style="margin-top: 24px;">Party Members</h4>
       <div id="partyMembersList"></div>
     </div>
   </div>
@@ -145,7 +182,10 @@
   <div id="adminPanelModal" class="modal">
     <div class="modal-content admin-panel">
       <span class="close">&times;</span>
-      <h3>Admin Panel</h3>
+      <h3><i class="fas fa-shield-alt"></i> Admin Dashboard</h3>
+      <p class="admin-badge" style="display: inline-block; padding: 4px 12px; background: rgba(99, 91, 255, 0.2); border: 1px solid var(--accent); border-radius: 12px; font-size: 12px; color: var(--accent); margin-bottom: 24px;">
+        <i class="fas fa-crown"></i> Administrator Account
+      </p>
       <div class="admin-section">
         <h4>Generate Color Code</h4>
         <input type="number" id="codeExpiryHours" placeholder="Hours (default: 24)" value="24" />

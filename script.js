@@ -83,14 +83,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const deletePartyBtn = document.getElementById('deletePartyBtn');
   const friendsBtn = document.getElementById('friendsBtn');
   const dmsBtn = document.getElementById('dmsBtn');
+  const profileBtn = document.getElementById('profileBtn');
   const changeDisplayNameBtn = document.getElementById('changeDisplayNameBtn');
   const changeColorBtn = document.getElementById('changeColorBtn');
   const requestColorCodeBtn = document.getElementById('requestColorCodeBtn');
   const adminPanelBtn = document.getElementById('adminPanelBtn');
+  const mentionAutocomplete = document.getElementById('mentionAutocomplete');
 
   // Modal elements
+  const profileModal = document.getElementById('profileModal');
   const changeDisplayNameModal = document.getElementById('changeDisplayNameModal');
   const changeColorModal = document.getElementById('changeColorModal');
+  const profileUsername = document.getElementById('profileUsername');
+  const profileAccountType = document.getElementById('profileAccountType');
   const friendsModal = document.getElementById('friendsModal');
   const dmsModal = document.getElementById('dmsModal');
   const adminPanelModal = document.getElementById('adminPanelModal');
@@ -337,12 +342,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
   };
 
-  messageInput.addEventListener('keydown', (event) => {
-    if (event.key === 'Enter') {
-      event.preventDefault();  
-      sendBtn.click();  
-    }
-  });
 
   signupUsername.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
@@ -368,12 +367,218 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // Mention system
+  let mentionUsers = [];
+  let mentionIndex = -1;
+  let currentMentionQuery = '';
+
+  function loadMentionUsers() {
+    const partyCode = localStorage.getItem('partyCode');
+    if (!partyCode) return;
+    
+    get(ref(db, `parties/${partyCode}/messages`))
+      .then(snapshot => {
+        const messages = snapshot.exists() ? snapshot.val() : {};
+        const users = new Map();
+        Object.values(messages).forEach(msg => {
+          if (!users.has(msg.username)) {
+            users.set(msg.username, {
+              username: msg.username,
+              displayName: msg.displayName || msg.username,
+              isAdmin: msg.isAdmin || false
+            });
+          }
+        });
+        mentionUsers = Array.from(users.values());
+      });
+  }
+
+  function parseMentions(text) {
+    const mentionRegex = /@(\w+)/g;
+    const mentions = [];
+    let match;
+    while ((match = mentionRegex.exec(text)) !== null) {
+      mentions.push(match[1]);
+    }
+    return mentions;
+  }
+
+  function renderMessageWithMentions(text) {
+    return new Promise((resolve) => {
+      const mentionRegex = /@(\w+)/g;
+      const usernames = new Set();
+      let match;
+
+      while ((match = mentionRegex.exec(text)) !== null) {
+        usernames.add(match[1]);
+      }
+
+      if (usernames.size === 0) {
+        resolve(text);
+        return;
+      }
+
+      // Get user data for all mentioned users
+      const userPromises = Array.from(usernames).map(username => 
+        get(ref(db, `users/${username}`)).then(snapshot => {
+          if (snapshot.exists()) {
+            const userData = snapshot.val();
+            return {
+              username,
+              displayName: userData.displayName || username,
+              isAdmin: userData.isAdmin || false
+            };
+          }
+          return { username, displayName: username, isAdmin: false };
+        }).catch(() => {
+          return { username, displayName: username, isAdmin: false };
+        })
+      );
+
+      Promise.all(userPromises).then(users => {
+        const userMap = new Map(users.map(u => [u.username, u]));
+        let html = '';
+        let lastIndex = 0;
+        const regex = /@(\w+)/g;
+        let m;
+
+        while ((m = regex.exec(text)) !== null) {
+          html += text.substring(lastIndex, m.index);
+          const username = m[1];
+          const user = userMap.get(username);
+          if (user) {
+            const displayName = user.displayName || username;
+            const adminClass = user.isAdmin ? 'admin-mention' : '';
+            html += `<span class="mention ${adminClass}" data-username="${username}">@${displayName}</span>`;
+          } else {
+            html += `@${username}`;
+          }
+          lastIndex = m.index + m[0].length;
+        }
+        html += text.substring(lastIndex);
+        resolve(html);
+      }).catch(() => {
+        resolve(text);
+      });
+    });
+  }
+
+  messageInput.addEventListener('input', (e) => {
+    const text = e.target.value;
+    const cursorPos = e.target.selectionStart;
+    const textBeforeCursor = text.substring(0, cursorPos);
+    const lastAt = textBeforeCursor.lastIndexOf('@');
+    
+    if (lastAt !== -1) {
+      const query = textBeforeCursor.substring(lastAt + 1).split(/\s/)[0];
+      if (query.length > 0 && /^\w+$/.test(query)) {
+        currentMentionQuery = query.toLowerCase();
+        showMentionAutocomplete(query);
+        return;
+      }
+    }
+    hideMentionAutocomplete();
+  });
+
+  function showMentionAutocomplete(query) {
+    const filtered = mentionUsers.filter(user => 
+      user.username.toLowerCase().includes(query.toLowerCase()) ||
+      (user.displayName && user.displayName.toLowerCase().includes(query.toLowerCase()))
+    ).slice(0, 5);
+
+    if (filtered.length === 0) {
+      mentionAutocomplete.style.display = 'none';
+      return;
+    }
+
+    mentionAutocomplete.innerHTML = '';
+    mentionIndex = -1;
+
+    filtered.forEach((user, index) => {
+      const item = document.createElement('div');
+      item.className = 'mention-item';
+      item.innerHTML = `
+        <span class="mention-username">${user.displayName || user.username}</span>
+        <span class="mention-display-name">@${user.username}</span>
+        ${user.isAdmin ? '<span class="mention-badge">ADMIN</span>' : ''}
+      `;
+      item.addEventListener('click', () => {
+        insertMention(user.username, user.displayName || user.username);
+      });
+      mentionAutocomplete.appendChild(item);
+    });
+
+    mentionAutocomplete.style.display = 'block';
+  }
+
+  function hideMentionAutocomplete() {
+    mentionAutocomplete.style.display = 'none';
+    mentionIndex = -1;
+  }
+
+  function insertMention(username, displayName) {
+    const text = messageInput.value;
+    const cursorPos = messageInput.selectionStart;
+    const textBeforeCursor = text.substring(0, cursorPos);
+    const lastAt = textBeforeCursor.lastIndexOf('@');
+    
+    if (lastAt !== -1) {
+      const before = text.substring(0, lastAt);
+      const after = text.substring(cursorPos);
+      messageInput.value = before + '@' + username + ' ' + after;
+      messageInput.focus();
+      messageInput.setSelectionRange(before.length + username.length + 2, before.length + username.length + 2);
+    }
+    
+    hideMentionAutocomplete();
+  }
+
+  messageInput.addEventListener('keydown', (e) => {
+    if (mentionAutocomplete.style.display === 'block') {
+      const items = mentionAutocomplete.querySelectorAll('.mention-item');
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        mentionIndex = Math.min(mentionIndex + 1, items.length - 1);
+        updateMentionSelection(items);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        mentionIndex = Math.max(mentionIndex - 1, -1);
+        updateMentionSelection(items);
+      } else if (e.key === 'Enter' && mentionIndex >= 0) {
+        e.preventDefault();
+        const filtered = mentionUsers.filter(u => 
+          u.username.toLowerCase().includes(currentMentionQuery) ||
+          (u.displayName && u.displayName.toLowerCase().includes(currentMentionQuery))
+        );
+        if (filtered[mentionIndex]) {
+          insertMention(filtered[mentionIndex].username, filtered[mentionIndex].displayName || filtered[mentionIndex].username);
+        }
+      } else if (e.key === 'Escape') {
+        hideMentionAutocomplete();
+      }
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      sendBtn.click();
+    }
+  });
+
+  function updateMentionSelection(items) {
+    items.forEach((item, index) => {
+      if (index === mentionIndex) {
+        item.classList.add('selected');
+      } else {
+        item.classList.remove('selected');
+      }
+    });
+  }
+
   sendBtn.addEventListener('click', () => {
     const currentUser = JSON.parse(localStorage.getItem('user'));
     const text = messageInput.value.trim();
     const partyCode = localStorage.getItem('partyCode');
 
     if (text) {
+      const mentions = parseMentions(text);
       const messagesRef = ref(db, `parties/${partyCode}/messages`);
       push(messagesRef, { 
         username: currentUser.username,
@@ -381,9 +586,11 @@ document.addEventListener('DOMContentLoaded', () => {
         displayNameColor: currentUser.displayNameColor,
         isAdmin: currentUser.isAdmin,
         text,
+        mentions: mentions,
         timestamp: Date.now()
       });
       messageInput.value = '';
+      hideMentionAutocomplete();
     }
   });
 
@@ -400,22 +607,53 @@ document.addEventListener('DOMContentLoaded', () => {
   deleteAccountBtn.addEventListener('click', () => {
     const currentUser = JSON.parse(localStorage.getItem('user'));
     const username = currentUser.username;
+    const displayName = currentUser.displayName || username;
 
-    if (confirm(`Are you sure you want to delete your account, ${username}? This action is irreversible.`)) {
-      const userRef = ref(db, `users/${username}`);
-      const onlineRef = ref(db, `online/${username}`);
+    // Double confirmation for safety
+    const confirmMessage = `Are you absolutely sure you want to delete your account "${displayName}" (${username})?\n\nThis will:\n• Permanently delete all your data\n• Remove you from all parties\n• Delete all your messages\n• Remove all friend connections\n\nThis action CANNOT be undone.`;
+    
+    if (confirm(confirmMessage)) {
+      // Second confirmation
+      if (confirm(`Final confirmation: Type "DELETE" to confirm account deletion for ${username}`)) {
+        const userRef = ref(db, `users/${username}`);
+        const onlineRef = ref(db, `online/${username}`);
 
-      set(userRef, null)
-        .then(() => {
-          set(onlineRef, null)
-            .then(() => {
-              localStorage.removeItem('user');
-              showToast('Your account has been deleted.');
+        // Also remove from friends lists
+        get(ref(db, 'users'))
+          .then(snapshot => {
+            if (snapshot.exists()) {
+              const users = snapshot.val();
+              const friendRemovalPromises = [];
+              
+              Object.keys(users).forEach(otherUsername => {
+                if (otherUsername !== username) {
+                  const friendRef = ref(db, `users/${otherUsername}/friends/${username}`);
+                  friendRemovalPromises.push(remove(friendRef));
+                }
+              });
+              
+              return Promise.all(friendRemovalPromises);
+            }
+          })
+          .then(() => {
+            return set(userRef, null);
+          })
+          .then(() => {
+            return set(onlineRef, null);
+          })
+          .then(() => {
+            localStorage.removeItem('user');
+            localStorage.removeItem('partyCode');
+            showToast('Your account has been permanently deleted.');
+            setTimeout(() => {
               window.location.reload();
-            })
-            .catch(err => showToast('Error removing from online users: ' + err));
-        })
-        .catch(err => showToast('Error deleting account: ' + err));
+            }, 1500);
+          })
+          .catch(err => {
+            console.error('Error deleting account:', err);
+            showToast('Error deleting account: ' + err.message);
+          });
+      }
     }
   });
 
@@ -441,9 +679,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (currentUser.isAdmin) {
       menuDisplayName.classList.add('admin-name');
       adminPanelBtn.style.display = 'block';
+      menuDiv.classList.add('admin-header');
     } else {
       menuDisplayName.classList.remove('admin-name');
       adminPanelBtn.style.display = 'none';
+      menuDiv.classList.remove('admin-header');
     }
     loadSavedParties();
   }
@@ -481,12 +721,15 @@ document.addEventListener('DOMContentLoaded', () => {
     displayName.style.color = currentUser.displayNameColor || '#e0e0e0';
     if (currentUser.isAdmin) {
       displayName.classList.add('admin-name');
+      chatDiv.classList.add('admin-header');
+    } else {
+      chatDiv.classList.remove('admin-header');
     }
     setupNotificationCheck();
     savePartyToUser(globalPartyCode);
 
     const messagesRef = ref(db, `parties/${globalPartyCode}/messages`);
-    onValue(messagesRef, (snapshot) => {
+    onValue(messagesRef, async (snapshot) => {
       messagesDiv.innerHTML = '';
       const messages = snapshot.val();
       if (messages) {
@@ -494,6 +737,9 @@ document.addEventListener('DOMContentLoaded', () => {
           const msg = messages[key];
           const div = document.createElement('div');
           div.className = 'message';
+          if (msg.isAdmin) {
+            div.classList.add('admin-account');
+          }
           const usernameSpan = document.createElement('span');
           usernameSpan.className = 'message-username';
           usernameSpan.textContent = (msg.displayName || msg.username) + ':';
@@ -502,14 +748,21 @@ document.addEventListener('DOMContentLoaded', () => {
             usernameSpan.classList.add('admin-name');
           }
           div.appendChild(usernameSpan);
-          div.appendChild(document.createTextNode(' ' + msg.text));
+          
+          // Render message with mentions
+          const messageHtml = await renderMessageWithMentions(msg.text);
+          const textSpan = document.createElement('span');
+          textSpan.innerHTML = ' ' + messageHtml;
+          div.appendChild(textSpan);
+          
           messagesDiv.appendChild(div);
         }
       }
       messagesDiv.scrollTop = messagesDiv.scrollHeight;
     });
   
-    deletePartyBtn.style.display = 'none'; 
+    deletePartyBtn.style.display = 'none';
+    loadMentionUsers(); 
   }
 
   function savePartyToUser(partyCode) {
@@ -568,13 +821,16 @@ document.addEventListener('DOMContentLoaded', () => {
     displayName.style.color = currentUser.displayNameColor || '#e0e0e0';
     if (currentUser.isAdmin) {
       displayName.classList.add('admin-name');
+      chatDiv.classList.add('admin-header');
+    } else {
+      chatDiv.classList.remove('admin-header');
     }
     partyCodeDisplay.textContent = partyCode;
     setupNotificationCheck();
     savePartyToUser(partyCode);
 
     const messagesRef = ref(db, `parties/${partyCode}/messages`);
-    onValue(messagesRef, (snapshot) => {
+    onValue(messagesRef, async (snapshot) => {
       messagesDiv.innerHTML = '';
       const messages = snapshot.val();
       if (messages) {
@@ -582,6 +838,9 @@ document.addEventListener('DOMContentLoaded', () => {
           const msg = messages[key];
           const div = document.createElement('div');
           div.className = 'message';
+          if (msg.isAdmin) {
+            div.classList.add('admin-account');
+          }
           const usernameSpan = document.createElement('span');
           usernameSpan.className = 'message-username';
           usernameSpan.textContent = (msg.displayName || msg.username) + ':';
@@ -590,7 +849,13 @@ document.addEventListener('DOMContentLoaded', () => {
             usernameSpan.classList.add('admin-name');
           }
           div.appendChild(usernameSpan);
-          div.appendChild(document.createTextNode(' ' + msg.text));
+          
+          // Render message with mentions
+          const messageHtml = await renderMessageWithMentions(msg.text);
+          const textSpan = document.createElement('span');
+          textSpan.innerHTML = ' ' + messageHtml;
+          div.appendChild(textSpan);
+          
           messagesDiv.appendChild(div);
         }
       }
@@ -606,6 +871,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       })
       .catch(err => console.error('Error checking party creator: ' + err));
+    
+    loadMentionUsers();
   }
 
   if (leavePartyBtn) {
@@ -676,9 +943,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Change Display Name
-  changeDisplayNameBtn.addEventListener('click', () => {
-    changeDisplayNameModal.style.display = 'block';
+  // Profile Modal
+  profileBtn.addEventListener('click', () => {
+    const currentUser = JSON.parse(localStorage.getItem('user'));
+    profileUsername.textContent = currentUser.username;
+    profileAccountType.textContent = currentUser.isAdmin ? 'Administrator' : 'Standard User';
+    if (currentUser.isAdmin) {
+      profileAccountType.style.color = 'var(--accent)';
+      profileAccountType.innerHTML = '<i class="fas fa-shield-alt"></i> Administrator';
+    } else {
+      profileAccountType.style.color = 'var(--text-primary)';
+    }
+    profileModal.style.display = 'block';
   });
 
   saveDisplayNameBtn.addEventListener('click', () => {
@@ -691,14 +967,8 @@ document.addEventListener('DOMContentLoaded', () => {
       displayName.textContent = newDisplayName;
       menuDisplayName.textContent = newDisplayName;
       showToast('Display name updated.');
-      closeModal(changeDisplayNameModal);
       newDisplayNameInput.value = '';
     }
-  });
-
-  // Change Color
-  changeColorBtn.addEventListener('click', () => {
-    changeColorModal.style.display = 'block';
   });
 
   saveColorBtn.addEventListener('click', () => {
@@ -717,7 +987,6 @@ document.addEventListener('DOMContentLoaded', () => {
               menuDisplayName.style.color = codeData.color;
               remove(ref(db, `colorCodes/${colorCode}`));
               showToast('Color updated.');
-              closeModal(changeColorModal);
               colorCodeInput.value = '';
             } else {
               showToast('Code has expired.');
@@ -758,38 +1027,56 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Friends
+  const friendSearchInput = document.getElementById('friendSearchInput');
+  let allFriends = {};
+
   friendsBtn.addEventListener('click', () => {
     friendsModal.style.display = 'block';
     loadFriends();
     loadPartyMembers();
   });
 
+  friendSearchInput.addEventListener('input', (e) => {
+    const searchTerm = e.target.value.toLowerCase().trim();
+    filterFriends(searchTerm);
+  });
+
+  function filterFriends(searchTerm) {
+    friendsList.innerHTML = '';
+    const filtered = Object.keys(allFriends).filter(username => 
+      username.toLowerCase().includes(searchTerm)
+    );
+
+    if (filtered.length === 0 && searchTerm) {
+      friendsList.innerHTML = '<p style="color: #6b6b6b; text-align: center; padding: 20px;">No friends found</p>';
+    } else if (filtered.length === 0) {
+      friendsList.innerHTML = '<p style="color: #6b6b6b; text-align: center; padding: 20px;">No friends yet</p>';
+    } else {
+      filtered.forEach(friendUsername => {
+        const item = document.createElement('div');
+        item.className = 'friend-item';
+        item.innerHTML = `
+          <span>${friendUsername}</span>
+          <button onclick="removeFriend('${friendUsername}')">Remove</button>
+        `;
+        friendsList.appendChild(item);
+      });
+    }
+  }
+
   function loadFriends() {
     const currentUser = JSON.parse(localStorage.getItem('user'));
     get(ref(db, `users/${currentUser.username}/friends`))
       .then(snapshot => {
-        friendsList.innerHTML = '';
-        const friends = snapshot.exists() ? snapshot.val() : {};
-        if (Object.keys(friends).length === 0) {
-          friendsList.innerHTML = '<p style="color: #888; text-align: center; padding: 20px;">No friends yet</p>';
-        } else {
-          Object.keys(friends).forEach(friendUsername => {
-            const item = document.createElement('div');
-            item.className = 'friend-item';
-            item.innerHTML = `
-              <span>${friendUsername}</span>
-              <button onclick="removeFriend('${friendUsername}')">Remove</button>
-            `;
-            friendsList.appendChild(item);
-          });
-        }
+        allFriends = snapshot.exists() ? snapshot.val() : {};
+        filterFriends(friendSearchInput.value.toLowerCase().trim());
       });
   }
 
   function loadPartyMembers() {
     const partyCode = localStorage.getItem('partyCode');
     if (!partyCode) {
-      partyMembersList.innerHTML = '<p style="color: #888; text-align: center; padding: 20px;">Not in a party</p>';
+      partyMembersList.innerHTML = '<p style="color: #6b6b6b; text-align: center; padding: 20px;">Not in a party</p>';
       return;
     }
     
@@ -803,7 +1090,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       
       if (members.size === 0) {
-        partyMembersList.innerHTML = '<p style="color: #888; text-align: center; padding: 20px;">No members</p>';
+        partyMembersList.innerHTML = '<p style="color: #6b6b6b; text-align: center; padding: 20px;">No members</p>';
       } else {
         const currentUser = JSON.parse(localStorage.getItem('user'));
         members.forEach(username => {
