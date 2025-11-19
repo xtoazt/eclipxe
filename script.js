@@ -604,8 +604,15 @@ document.addEventListener('DOMContentLoaded', () => {
     loginDiv.style.display = 'block';
   });
 
-  deleteAccountBtn.addEventListener('click', () => {
+  const deleteAccountBtnDropdown = document.getElementById('deleteAccountBtnDropdown');
+  
+  function handleAccountDeletion() {
     const currentUser = JSON.parse(localStorage.getItem('user'));
+    if (!currentUser) {
+      showToast('No user logged in.');
+      return;
+    }
+    
     const username = currentUser.username;
     const displayName = currentUser.displayName || username;
 
@@ -614,7 +621,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (confirm(confirmMessage)) {
       // Second confirmation
-      if (confirm(`Final confirmation: Type "DELETE" to confirm account deletion for ${username}`)) {
+      if (confirm(`Final confirmation: Delete account "${username}"?\n\nClick OK to permanently delete.`)) {
+        showToast('Deleting account...');
+        
         const userRef = ref(db, `users/${username}`);
         const onlineRef = ref(db, `online/${username}`);
 
@@ -628,12 +637,13 @@ document.addEventListener('DOMContentLoaded', () => {
               Object.keys(users).forEach(otherUsername => {
                 if (otherUsername !== username) {
                   const friendRef = ref(db, `users/${otherUsername}/friends/${username}`);
-                  friendRemovalPromises.push(remove(friendRef));
+                  friendRemovalPromises.push(remove(friendRef).catch(() => {})); // Ignore errors for missing friends
                 }
               });
               
               return Promise.all(friendRemovalPromises);
             }
+            return Promise.resolve();
           })
           .then(() => {
             return set(userRef, null);
@@ -647,15 +657,20 @@ document.addEventListener('DOMContentLoaded', () => {
             showToast('Your account has been permanently deleted.');
             setTimeout(() => {
               window.location.reload();
-            }, 1500);
+            }, 2000);
           })
           .catch(err => {
             console.error('Error deleting account:', err);
-            showToast('Error deleting account: ' + err.message);
+            showToast('Error deleting account. Please try again.');
           });
       }
     }
-  });
+  }
+  
+  deleteAccountBtn.addEventListener('click', handleAccountDeletion);
+  if (deleteAccountBtnDropdown) {
+    deleteAccountBtnDropdown.addEventListener('click', handleAccountDeletion);
+  }
 
   function generatePartyCode() {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -673,17 +688,18 @@ document.addEventListener('DOMContentLoaded', () => {
     createPartyDiv.style.display = 'none';
     joinPartyDiv.style.display = 'none';
     menuDiv.style.display = 'block';
+    menuDiv.classList.add('active');
     const currentUser = JSON.parse(localStorage.getItem('user'));
-    menuDisplayName.textContent = currentUser.displayName || currentUser.username;
-    menuDisplayName.style.color = currentUser.displayNameColor || '#e0e0e0';
-    if (currentUser.isAdmin) {
-      menuDisplayName.classList.add('admin-name');
-      adminPanelBtn.style.display = 'block';
-      menuDiv.classList.add('admin-header');
-    } else {
-      menuDisplayName.classList.remove('admin-name');
-      adminPanelBtn.style.display = 'none';
-      menuDiv.classList.remove('admin-header');
+    if (menuDisplayName) {
+      menuDisplayName.textContent = currentUser.displayName || currentUser.username;
+      menuDisplayName.style.color = currentUser.displayNameColor || '#e0e0e0';
+      if (currentUser.isAdmin) {
+        menuDisplayName.classList.add('admin-name');
+        adminPanelBtn.style.display = 'block';
+      } else {
+        menuDisplayName.classList.remove('admin-name');
+        adminPanelBtn.style.display = 'none';
+      }
     }
     loadSavedParties();
   }
@@ -716,14 +732,14 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('partyCode', globalPartyCode);
     partyCodeDisplay.textContent = globalPartyCode;
     chatDiv.style.display = 'block';
+    chatDiv.classList.add('active');
+    menuDiv.style.display = 'none';
+    menuDiv.classList.remove('active');
     const currentUser = JSON.parse(localStorage.getItem('user'));
     displayName.textContent = currentUser.displayName || currentUser.username;
     displayName.style.color = currentUser.displayNameColor || '#e0e0e0';
     if (currentUser.isAdmin) {
       displayName.classList.add('admin-name');
-      chatDiv.classList.add('admin-header');
-    } else {
-      chatDiv.classList.remove('admin-header');
     }
     setupNotificationCheck();
     savePartyToUser(globalPartyCode);
@@ -816,14 +832,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function loadPartyChat(partyCode) {
     chatDiv.style.display = 'block';
+    chatDiv.classList.add('active');
+    menuDiv.style.display = 'none';
+    menuDiv.classList.remove('active');
     const currentUser = JSON.parse(localStorage.getItem('user'));
     displayName.textContent = currentUser.displayName || currentUser.username;
     displayName.style.color = currentUser.displayNameColor || '#e0e0e0';
     if (currentUser.isAdmin) {
       displayName.classList.add('admin-name');
-      chatDiv.classList.add('admin-header');
-    } else {
-      chatDiv.classList.remove('admin-header');
     }
     partyCodeDisplay.textContent = partyCode;
     setupNotificationCheck();
