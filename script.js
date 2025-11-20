@@ -48,6 +48,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const leavePartyBtn = document.getElementById('leavePartyBtn');
   const partyCodeDisplay = document.getElementById('partyCodeDisplay');
   const deletePartyBtn = document.getElementById('deletePartyBtn');
+  const imageInput = document.getElementById('imageInput');
+  const imageBtn = document.getElementById('imageBtn');
+  const menuDisplayName = document.getElementById('menuDisplayName');
 
   const togglePasswordVisibility = (input, toggleBtn) => {
     toggleBtn.addEventListener('click', () => {
@@ -171,6 +174,94 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // Image upload functionality
+  imageBtn.addEventListener('click', () => {
+    imageInput.click();
+  });
+
+  imageInput.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      showToast('Please select an image file.');
+      imageInput.value = '';
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      showToast('Image size must be less than 10MB.');
+      imageInput.value = '';
+      return;
+    }
+
+    showToast('Uploading image...');
+    
+    try {
+      // Convert image to base64
+      const base64 = await fileToBase64(file);
+      
+      // Upload to freeimage.host using POST with form data
+      const formData = new FormData();
+      formData.append('key', '6d207e02198a847aa98d0a2a901485a5');
+      formData.append('action', 'upload');
+      formData.append('source', base64);
+      formData.append('format', 'json');
+
+      const response = await fetch('https://freeimage.host/api/1/upload', {
+        method: 'POST',
+        body: formData
+      });
+
+      const result = await response.json();
+      
+      if (result.status === 200 && result.image && result.image.url) {
+        const imageUrl = result.image.url;
+        const currentUser = JSON.parse(localStorage.getItem('user'));
+        const partyCode = localStorage.getItem('partyCode');
+        
+        if (!partyCode) {
+          showToast('Please join a party first.');
+          imageInput.value = '';
+          return;
+        }
+        
+        const messagesRef = ref(db, `parties/${partyCode}/messages`);
+        
+        push(messagesRef, { 
+          username: currentUser.username, 
+          text: '',
+          imageUrl: imageUrl,
+          isImage: true,
+          timestamp: Date.now()
+        });
+        
+        showToast('Image uploaded successfully!');
+        imageInput.value = '';
+      } else {
+        showToast('Failed to upload image: ' + (result.error || 'Unknown error'));
+        imageInput.value = '';
+      }
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      showToast('Error uploading image. Please try again.');
+      imageInput.value = '';
+    }
+  });
+
+  function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        // Extract base64 string (remove data:image/...;base64, prefix)
+        const base64String = reader.result.split(',')[1];
+        resolve(base64String);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
   sendBtn.addEventListener('click', () => {
     const currentUser = JSON.parse(localStorage.getItem('user'));
     const text = messageInput.value.trim();
@@ -281,12 +372,36 @@ document.addEventListener('DOMContentLoaded', () => {
     onValue(messagesRef, (snapshot) => {
       messagesDiv.innerHTML = '';
       const messages = snapshot.val();
-      for (const key in messages) {
-        const msg = messages[key];
-        const div = document.createElement('div');
-        div.className = 'message';
-        div.textContent = `${msg.username}: ${msg.text}`;
-        messagesDiv.appendChild(div);
+      if (messages) {
+        for (const key in messages) {
+          const msg = messages[key];
+          const div = document.createElement('div');
+          div.className = 'message';
+          
+          if (msg.isImage && msg.imageUrl) {
+            const usernameSpan = document.createElement('span');
+            usernameSpan.className = 'message-username';
+            usernameSpan.textContent = `${msg.username}: `;
+            div.appendChild(usernameSpan);
+            
+            const img = document.createElement('img');
+            img.src = msg.imageUrl;
+            img.className = 'message-image';
+            img.alt = 'Shared image';
+            img.loading = 'lazy';
+            div.appendChild(img);
+            
+            if (msg.text) {
+              const textSpan = document.createElement('span');
+              textSpan.textContent = ' ' + msg.text;
+              div.appendChild(textSpan);
+            }
+          } else {
+            div.textContent = `${msg.username}: ${msg.text}`;
+          }
+          
+          messagesDiv.appendChild(div);
+        }
       }
       messagesDiv.scrollTop = messagesDiv.scrollHeight;
     });
@@ -352,12 +467,36 @@ document.addEventListener('DOMContentLoaded', () => {
     onValue(messagesRef, (snapshot) => {
       messagesDiv.innerHTML = '';
       const messages = snapshot.val();
-      for (const key in messages) {
-        const msg = messages[key];
-        const div = document.createElement('div');
-        div.className = 'message';
-        div.textContent = `${msg.username}: ${msg.text}`;
-        messagesDiv.appendChild(div);
+      if (messages) {
+        for (const key in messages) {
+          const msg = messages[key];
+          const div = document.createElement('div');
+          div.className = 'message';
+          
+          if (msg.isImage && msg.imageUrl) {
+            const usernameSpan = document.createElement('span');
+            usernameSpan.className = 'message-username';
+            usernameSpan.textContent = `${msg.username}: `;
+            div.appendChild(usernameSpan);
+            
+            const img = document.createElement('img');
+            img.src = msg.imageUrl;
+            img.className = 'message-image';
+            img.alt = 'Shared image';
+            img.loading = 'lazy';
+            div.appendChild(img);
+            
+            if (msg.text) {
+              const textSpan = document.createElement('span');
+              textSpan.textContent = ' ' + msg.text;
+              div.appendChild(textSpan);
+            }
+          } else {
+            div.textContent = `${msg.username}: ${msg.text}`;
+          }
+          
+          messagesDiv.appendChild(div);
+        }
       }
       messagesDiv.scrollTop = messagesDiv.scrollHeight;
     });
