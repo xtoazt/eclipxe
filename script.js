@@ -373,8 +373,15 @@ document.addEventListener('DOMContentLoaded', () => {
     showToast('Uploading image...');
     
     try {
+<<<<<<< HEAD
       const base64 = await fileToBase64(file);
       
+=======
+      // Convert image to base64
+      const base64 = await fileToBase64(file);
+      
+      // Upload to freeimage.host using POST with form data
+>>>>>>> 6ede79359e26b39fafbd0b9d75138e3a83909dce
       const formData = new FormData();
       formData.append('key', '6d207e02198a847aa98d0a2a901485a5');
       formData.append('action', 'upload');
@@ -400,6 +407,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         const messagesRef = ref(db, `parties/${partyCode}/messages`);
+<<<<<<< HEAD
+=======
+        
+>>>>>>> 6ede79359e26b39fafbd0b9d75138e3a83909dce
         push(messagesRef, { 
           username: currentUser.username, 
           text: '',
@@ -425,6 +436,10 @@ document.addEventListener('DOMContentLoaded', () => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = () => {
+<<<<<<< HEAD
+=======
+        // Extract base64 string (remove data:image/...;base64, prefix)
+>>>>>>> 6ede79359e26b39fafbd0b9d75138e3a83909dce
         const base64String = reader.result.split(',')[1];
         resolve(base64String);
       };
