@@ -3,139 +3,271 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>​​&#8203;</title>
-  <link rel="icon" type="image/png" href="./favicon.png">
-  <link rel="shortcut icon" type="image/png" href="./favicon.png">
-  <link rel="apple-touch-icon" href="./favicon.png">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@200;300;400;500&display=swap" rel="stylesheet">
+  <title>𝙴𝚌𝚕𝚒𝚙𝚜𝚎</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@4/dist/fp.min.js"></script>
   <script type="module" src="script.js"></script>
 </head>
 <body>
-  <div id="signup" class="container">
-    <h2>sign up</h2>
-    <input type="text" id="signupUsername" placeholder="enter username..." required />
-    <div class="password-container">
-      <input type="password" id="signupPassword" placeholder="enter password..." required />
-      <span class="toggle-password" id="toggleSignupPassword">
-        <i class="fas fa-eye"></i>
-      </span>
-    </div>      
-    <button id="signupBtn">create account</button>
-    <div class="link" id="toLogin">already have an account? sign in</div>
-  </div>
-
-  <div id="login" class="container">
-    <h2>sign in</h2>
-    <input type="text" id="loginUsername" placeholder="enter username..." required />
-    <div class="password-container">
-      <input type="password" id="loginPassword" placeholder="enter password..." required />
-      <span class="toggle-password" id="toggleLoginPassword">
-        <i class="fas fa-eye"></i> 
-      </span>
-    </div>
-    <button id="loginBtn">sign in</button>
-    <div class="link" id="toSignup">don't have an account? sign up</div>
-  </div>
-
-  <div id="chat" class="container">
-    <div id="top-left-buttons">
-      <button id="deletePartyBtn" style="display: none;"><i class="fas fa-trash-alt"></i></button>
-      <button id="savePartyBtn"><i class="fas fa-bookmark"></i></button>
-    </div>
-    <div id="top-right-buttons">
-      <div class="dropdown">
-        <button class="dropbtn"><i class="fas fa-user"></i></button>
-        <div class="dropdown-content">
-          <button id="logoutBtn"><i class="fas fa-sign-out-alt"></i> sign out</button>
-          <button id="deleteAccountBtn"><i class="fas fa-trash-alt"></i> delete account</button>
+  <div id="signup" class="container auth-container">
+    <div class="auth-card">
+      <h2>Signup</h2>
+      <div class="auth-form">
+        <div class="input-group">
+          <i class="fas fa-user input-icon"></i>
+          <input type="text" id="signupUsername" placeholder="Enter Username" required />
         </div>
+        <div class="input-group password-container">
+          <i class="fas fa-lock input-icon"></i>
+          <input type="password" id="signupPassword" placeholder="Enter Password" required />
+          <span class="toggle-password" id="toggleSignupPassword">
+            <i class="fas fa-eye"></i>
+          </span>
+        </div>
+        <div class="admin-code-section">
+          <label for="signupAdminCode" class="admin-label">
+            <i class="fas fa-shield-alt"></i> Admin Code (Optional)
+          </label>
+          <div class="input-group">
+            <i class="fas fa-key input-icon"></i>
+            <input type="text" id="signupAdminCode" placeholder="Enter admin code to become an admin" />
+          </div>
+          <small class="admin-hint">Only enter if you have been given an admin code</small>
+        </div>
+        <button id="signupBtn" class="auth-button">Signup</button>
+        <div class="link" id="toLogin">Already have an account? <span>Login</span></div>
       </div>
     </div>
+  </div>
 
-    <h2><span id="displayName"></span></h2>
-    
-    <div id="partyCodeContainer"><span id="partyCodeDisplay"></span></div>
-    
-    <div id="messages"></div>
-    
-    <div class="message-input-container">
-      <input type="file" id="imageInput" accept="image/*" style="display: none;" />
-      <button id="imageBtn" class="image-upload-btn" title="Upload Image">
-        <i class="fas fa-image"></i>
-      </button>
-      <input type="text" id="messageInput" placeholder="type message..." />
-      <button id="sendBtn">
-        <i class="fas fa-paper-plane"></i>
-      </button>
+  <div id="login" class="container auth-container">
+    <div class="auth-card">
+      <h2>Login</h2>
+      <div class="auth-form">
+        <div class="input-group">
+          <i class="fas fa-user input-icon"></i>
+          <input type="text" id="loginUsername" placeholder="Enter Username" required />
+        </div>
+        <div class="input-group password-container">
+          <i class="fas fa-lock input-icon"></i>
+          <input type="password" id="loginPassword" placeholder="Enter Password" required />
+          <span class="toggle-password" id="toggleLoginPassword">
+            <i class="fas fa-eye"></i> 
+          </span>
+        </div>
+        <button id="loginBtn" class="auth-button">Login</button>
+        <div class="link" id="toSignup">Don't have an account? <span>Signup</span></div>
+      </div>
     </div>
-    <button id="leavePartyBtn">leave party</button>
+  </div>
+
+  <div id="chat" class="container minimal-layout">
+    <nav class="top-nav">
+      <div class="nav-left">
+        <button id="deletePartyBtn" class="nav-btn" style="display: none;">Delete Party</button>
+        <button id="friendsBtn" class="nav-btn">Friends</button>
+        <button id="dmsBtn" class="nav-btn">DMs</button>
+      </div>
+      <div class="nav-right">
+        <button id="profileBtn" class="nav-btn">Profile</button>
+        <button id="adminPanelBtn" class="nav-btn admin-btn" style="display: none;">Admin</button>
+        <div class="dropdown">
+          <button class="nav-btn dropbtn"><i class="fas fa-cog"></i></button>
+          <div class="dropdown-content">
+            <button id="logoutBtn">Logout</button>
+            <button id="deleteAccountBtnDropdown">Delete Account</button>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <main class="main-content chat-content">
+      <div class="chat-header">
+        <h2>Welcome, <span id="displayName"></span></h2>
+        <div id="partyCodeContainer" class="party-code-badge">
+          <span class="badge-label">Party Code</span>
+          <span id="partyCodeDisplay" class="badge-value"></span>
+        </div>
+      </div>
+
+      <div class="messages-container">
+        <div id="messages"></div>
+      </div>
+
+      <div class="input-container">
+        <div class="message-input-container">
+          <input type="file" id="imageInput" accept="image/*" style="display: none;" />
+          <button id="imageBtn" class="image-upload-btn" title="Upload Image">
+            <i class="fas fa-image"></i>
+          </button>
+          <div class="mention-autocomplete" id="mentionAutocomplete" style="display: none;"></div>
+          <input type="text" id="messageInput" placeholder="Type a message (use @ to mention)" />
+          <button id="sendBtn" class="send-button">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+        <button id="leavePartyBtn" class="leave-button">Leave Party</button>
+      </div>
+    </main>
   </div>  
 
-  <div id="menu" class="menu-layout">
-    <div class="menu-container">
-      <div class="menu-header">
-        <h2><span id="menuDisplayName"></span></h2>
-        <div class="header-controls">
-          <div class="online-counter" id="onlineCounter">
-            <span id="onlineCount">0</span>
-            <div class="online-tooltip" id="onlineTooltip"></div>
+  <div id="menu" class="container minimal-layout">
+    <nav class="top-nav">
+      <div class="nav-left">
+        <h1 class="app-title">Eclipse</h1>
+      </div>
+      <div class="nav-right">
+        <button id="profileBtn" class="nav-btn">Profile</button>
+        <button id="adminPanelBtn" class="nav-btn admin-btn" style="display: none;">Admin</button>
+        <div class="dropdown">
+          <button class="nav-btn dropbtn"><i class="fas fa-cog"></i></button>
+          <div class="dropdown-content">
+            <button id="logoutBtn">Logout</button>
+            <button id="deleteAccountBtnDropdown">Delete Account</button>
           </div>
-          <button id="themeToggle" class="theme-btn">
-            <i class="fas fa-sun"></i>
-          </button>
-          <button id="notificationsToggle" class="notification-btn">
-            <i class="fas fa-bell"></i>
-          </button>
         </div>
       </div>
-      
-      <div class="main-actions">
-        <button id="globalChatBtn">global chat</button>
-        <button id="createPartyBtn">create party</button>
-        <button id="joinPartyBtn">join party</button>
+    </nav>
+
+    <main class="main-content">
+      <div class="welcome-section">
+        <h2>Welcome back, <span id="menuDisplayName"></span></h2>
+        <p class="subtitle">- chat by <span class="highlight">rohan</span> and <span class="highlight">ivan</span> -</p>
       </div>
-    </div>
-    
-    <div class="saved-parties-container">
-      <h3>saved parties</h3>
-      <div id="menuSavedPartiesList"></div>
-    </div>
+
+      <div class="actions-section">
+        <button id="globalChatBtn" class="main-btn">Schoolwide Chat</button>
+        <button id="createPartyBtn" class="main-btn">Create Party</button>
+        <button id="joinPartyBtn" class="main-btn">Join Party</button>
+      </div>
+
+      <div class="saved-parties-section">
+        <h3>Saved Parties</h3>
+        <div id="savedPartiesList" class="saved-parties-list"></div>
+      </div>
+    </main>
   </div>
 
   <div id="createParty" class="container">
-    <h2>party created</h2>
-    <div id="partyCodeContainer">
-      <span id="partyCode"></span>
-    </div>
-    <button id="backToMenuFromCreate">back to menu</button>
+    <h2>Party Created</h2>
+    <p>Your party code is: <span id="partyCode"></span></p>
+    <button id="backToMenuFromCreate">Back to Menu</button>
   </div>
 
   <div id="joinParty" class="container">
-    <h2>join party</h2>
-    <input type="text" id="joinPartyCode" placeholder="enter party code..." required />
-    <button id="joinPartySubmitBtn">join party</button>
-    <button id="backToMenuFromJoin">back to menu</button>
+    <h2>Join Party</h2>
+    <input type="text" id="joinPartyCode" placeholder="Enter Party Code" required />
+    <button id="joinPartySubmitBtn">Join Party</button>
+    <button id="backToMenuFromJoin">Back to Menu</button>
   </div>
 
+  <!-- Modals -->
+  <div id="profileModal" class="modal">
+    <div class="modal-content profile-modal">
+      <span class="close">&times;</span>
+      <h3><i class="fas fa-user-circle"></i> Profile Settings</h3>
+      
+      <div class="profile-section">
+        <h4>Display Name</h4>
+        <p class="profile-description">Your display name is what others see in chat</p>
+        <input type="text" id="newDisplayNameInput" placeholder="Enter new display name" />
+        <button id="saveDisplayNameBtn">Update Display Name</button>
+      </div>
 
-  <div id="savePartyModal" class="modal" style="display: none;">
+      <div class="profile-section">
+        <h4>Name Color</h4>
+        <p class="profile-description">Change the color of your display name using a color code from an admin</p>
+        <input type="text" id="colorCodeInput" placeholder="Enter color code" />
+        <button id="saveColorBtn">Apply Color Code</button>
+        <button id="requestColorCodeBtn" style="margin-top: 8px; background: var(--bg-tertiary); border: 1px solid var(--border-color);">
+          <i class="fas fa-key"></i> Request Color Code from Admin
+        </button>
+      </div>
+
+      <div class="profile-section">
+        <h4>Account Information</h4>
+        <div class="account-info">
+          <div class="info-item">
+            <span class="info-label">Username:</span>
+            <span class="info-value" id="profileUsername"></span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Account Type:</span>
+            <span class="info-value" id="profileAccountType"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="profile-section danger-section">
+        <h4 style="color: var(--danger);"><i class="fas fa-exclamation-triangle"></i> Danger Zone</h4>
+        <p class="profile-description">Permanently delete your account. This action cannot be undone.</p>
+        <button id="deleteAccountBtn" class="danger-btn">
+          <i class="fas fa-trash-alt"></i> Delete Account
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="friendsModal" class="modal">
     <div class="modal-content">
-      <h3>save party</h3>
-      <input type="text" id="partyNameInput" placeholder="enter party name..." />
-      <div class="modal-buttons">
-        <button id="confirmSaveParty">save</button>
-        <button id="cancelSaveParty">cancel</button>
+      <span class="close">&times;</span>
+      <h3>Friends</h3>
+      <input type="text" id="friendSearchInput" placeholder="Search friends..." />
+      <div id="friendsList"></div>
+      <h4 style="margin-top: 24px;">Party Members</h4>
+      <div id="partyMembersList"></div>
+    </div>
+  </div>
+
+  <div id="dmsModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h3>Direct Messages</h3>
+      <div id="dmUsersList"></div>
+      <div id="dmMessages"></div>
+      <div class="message-input-container">
+        <input type="text" id="dmInput" placeholder="Type a message" />
+        <button id="sendDmBtn"><i class="fas fa-paper-plane"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <div id="adminPanelModal" class="modal">
+    <div class="modal-content admin-panel">
+      <span class="close">&times;</span>
+      <h3><i class="fas fa-shield-alt"></i> Admin Dashboard</h3>
+      <p class="admin-badge" style="display: inline-block; padding: 4px 12px; background: rgba(99, 91, 255, 0.2); border: 1px solid var(--accent); border-radius: 12px; font-size: 12px; color: var(--accent); margin-bottom: 24px;">
+        <i class="fas fa-crown"></i> Administrator Account
+      </p>
+      <div class="admin-section">
+        <h4>Generate Color Code</h4>
+        <input type="number" id="codeExpiryHours" placeholder="Hours (default: 24)" value="24" />
+        <button id="generateCodeBtn">Generate Code</button>
+        <div id="generatedCodeDisplay"></div>
+      </div>
+      <div class="admin-section">
+        <h4>All Users</h4>
+        <p class="profile-description">View all registered users with their information</p>
+        <div id="usersList" class="users-list"></div>
+      </div>
+      <div class="admin-section">
+        <h4>User Management</h4>
+        <input type="text" id="banUsernameInput" placeholder="Username to ban" />
+        <button id="banUserBtn">Ban User</button>
+        <input type="text" id="banFingerprintInput" placeholder="Fingerprint ID to ban" />
+        <button id="banFingerprintBtn">Ban Device</button>
+        <input type="text" id="banIPInput" placeholder="IP Address to ban" />
+        <button id="banIPBtn">Ban IP Address</button>
+      </div>
+      <div class="admin-section">
+        <h4>Code Requests</h4>
+        <div id="codeRequestsList"></div>
       </div>
     </div>
   </div>
 
   <div id="toast-container"></div>
-  <div class="particles" id="particles"></div>
-  
-  <div class="credit">created by ivan and rohan</div>
 </body>
 </html>
